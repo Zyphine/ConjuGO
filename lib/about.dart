@@ -3,7 +3,7 @@ import 'package:conjugo/DrawerMenu.dart';
 
 //Page à propos
 class About extends StatelessWidget {
-  const About({super.key});
+  const About({super.key}); //Git GF
 
   @override
   Widget build(BuildContext context) {
