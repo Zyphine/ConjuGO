@@ -42,7 +42,7 @@ bool passwordContainLetterAndNumber(String password) {
       appBar: AppBar(
         title: const Text("Inscrivez-vous"),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Color.fromARGB(255, 232, 40, 152),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
@@ -92,12 +92,12 @@ bool passwordContainLetterAndNumber(String password) {
                       //Rendre impossible les copier-coller
                       copy: true,
                       cut: true,
-                      paste: true,
+                      paste: true, //Peut-être pas besoin car déjà "true" de base
                       selectAll: true,
                     ),
                     decoration: const InputDecoration(labelText: " Mail")),
-                /*TextFormField(
-                    Mail 2
+               /*TextFormField(
+                    //Mail 2
                     controller: emailController2,
                     toolbarOptions: const ToolbarOptions(
                       copy: false,
@@ -106,8 +106,8 @@ bool passwordContainLetterAndNumber(String password) {
                       selectAll: false,
                     ),
                     decoration: const InputDecoration(
-                        labelText: " Rentrez votre mail une seconde fois")),
-                const SizedBox(height: 20),*/
+                        labelText: " Rentrez votre mail une seconde fois")),*/
+                const SizedBox(height: 20),
                 TextFormField(
                     // MDP
                     obscureText: true,
@@ -160,17 +160,15 @@ bool passwordContainLetterAndNumber(String password) {
                               db.collection("USERDATA").doc(userUid).set({
                                 "nom": nameController.text,
                                 "prénom": surnameController.text,
-                                "date_naissance": dateController.text
+                                "date_naissance": dateController.text,
+                                "admin": false,
+                                "super_admin": false
                               });
                               //Redirection vers page accueil activités
                               showAlertDialog(context);
                             }
                           });
-                        } else {
-                          //Pop up erreur mail, et on nettoie le champ mail 2
-                          showAlertDialogMail(context);
-                          emailController2.clear();
-                        }
+
                       } else {
                         //Pop up erreur mdp et on nettoie les 2 mdp
                         showAlertDialogMdp(context);
