@@ -1,4 +1,6 @@
+import 'package:conjugo/AuthenticationService.dart';
 import 'package:conjugo/activityMap.dart';
+import 'package:conjugo/dashboard.dart';
 import 'package:conjugo/myActivities.dart';
 import 'package:conjugo/settings.dart';
 import 'package:conjugo/about.dart';
@@ -7,6 +9,9 @@ import 'package:conjugo/listActivity.dart';
 
 //Classe définissant le menu
 class DrawerMenu extends Drawer {
+  
+  AuthenticationService auth = AuthenticationService();
+
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -132,6 +137,25 @@ class DrawerMenu extends Drawer {
                             style: TextStyle(
                                 fontSize: 25,
                                 color: Colors.blue,
+                                decoration: TextDecoration.underline)))),
+              )),
+              Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              //Vers la dashbord
+              child: GestureDetector(
+                onTap: () {
+                Navigator.push(context,
+                    PageRouteBuilder(pageBuilder: (_, __, ___) => DashboardPage()));
+              },
+                child: const Card(
+                    color: Color.fromARGB(255, 88, 180, 255),
+                    child: ListTile(
+                        leading: Icon(Icons.admin_panel_settings,
+                            color: Colors.white, size: 40),
+                        title: Text('Tableau de bord',
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
                                 decoration: TextDecoration.underline)))),
               )),
           Padding(
