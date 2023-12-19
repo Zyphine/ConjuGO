@@ -27,6 +27,16 @@ class RegisterPageState extends State<RegisterPage> {
   TextEditingController surnameController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
+// Création fonction qui vérifie si le mot de passe contient au moins 1 lettre et 1 chiffre
+bool passwordContainLetterAndNumber(String password) {
+  // Vérifier la présence d'au moins une lettre
+  bool hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
+  // Vérifier la présence d'au moins un chiffre
+  bool hasNumber = password.contains(RegExp(r'[1234567890]'));
+  // Retourner true si le mot de passe respecte les critères, sinon false
+  return hasLetter && hasNumber;
+}
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -80,14 +90,14 @@ class RegisterPageState extends State<RegisterPage> {
                     controller: emailController,
                     toolbarOptions: const ToolbarOptions(
                       //Rendre impossible les copier-coller
-                      copy: false,
-                      cut: false,
-                      paste: false,
-                      selectAll: false,
+                      copy: true,
+                      cut: true,
+                      paste: true,
+                      selectAll: true,
                     ),
                     decoration: const InputDecoration(labelText: " Mail")),
-                TextFormField(
-                    //Mail 2
+                /*TextFormField(
+                    Mail 2
                     controller: emailController2,
                     toolbarOptions: const ToolbarOptions(
                       copy: false,
@@ -97,7 +107,7 @@ class RegisterPageState extends State<RegisterPage> {
                     ),
                     decoration: const InputDecoration(
                         labelText: " Rentrez votre mail une seconde fois")),
-                const SizedBox(height: 20),
+                const SizedBox(height: 20),*/
                 TextFormField(
                     // MDP
                     obscureText: true,
@@ -109,7 +119,7 @@ class RegisterPageState extends State<RegisterPage> {
                       selectAll: false,
                     ),
                     decoration: const InputDecoration(
-                        labelText: " Mot de Passe (format : JJMMAAAA)")),
+                        labelText: " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)")),
                 const SizedBox(height: 20),
                 TextFormField(
                     //MDP 2
@@ -133,10 +143,10 @@ class RegisterPageState extends State<RegisterPage> {
                     onPressed: () //=> print(emailControler.text),
                         async {
                       //Vérifications que le mdp est dans le bon format et qu'il a bien été rédigé 2 fois
-                      if (passwordController.text.length == 8 &&
-                          passwordController.text == passwordController2.text) {
+                      if (passwordController.text.length >= 8 &&
+                          passwordController.text == passwordController2.text &&
+                          passwordContainLetterAndNumber(passwordController.text) == true) {
                         //Vérifications que le mail a bien été rentré correctement 2 fois
-                        if (emailController.text == emailController2.text) {
                           //Inscription
                           auth.registerWithEmailAndPassword(
                               emailController.text, passwordController.text);
