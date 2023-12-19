@@ -32,7 +32,7 @@ class RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: const Text("Inscrivez-vous"),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Color.fromARGB(255, 232, 40, 152),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
@@ -80,13 +80,13 @@ class RegisterPageState extends State<RegisterPage> {
                     controller: emailController,
                     toolbarOptions: const ToolbarOptions(
                       //Rendre impossible les copier-coller
-                      copy: false,
-                      cut: false,
-                      paste: false,
-                      selectAll: false,
+                      copy: true,
+                      cut: true,
+                      paste: true, //Peut-être pas besoin car déjà "true" de base
+                      selectAll: true,
                     ),
                     decoration: const InputDecoration(labelText: " Mail")),
-                TextFormField(
+               /*TextFormField(
                     //Mail 2
                     controller: emailController2,
                     toolbarOptions: const ToolbarOptions(
@@ -96,7 +96,7 @@ class RegisterPageState extends State<RegisterPage> {
                       selectAll: false,
                     ),
                     decoration: const InputDecoration(
-                        labelText: " Rentrez votre mail une seconde fois")),
+                        labelText: " Rentrez votre mail une seconde fois")),*/
                 const SizedBox(height: 20),
                 TextFormField(
                     // MDP
@@ -109,7 +109,7 @@ class RegisterPageState extends State<RegisterPage> {
                       selectAll: false,
                     ),
                     decoration: const InputDecoration(
-                        labelText: " Mot de Passe (format : JJMMAAAA)")),
+                        labelText: " Mot de Passe")),
                 const SizedBox(height: 20),
                 TextFormField(
                     //MDP 2
@@ -133,10 +133,8 @@ class RegisterPageState extends State<RegisterPage> {
                     onPressed: () //=> print(emailControler.text),
                         async {
                       //Vérifications que le mdp est dans le bon format et qu'il a bien été rédigé 2 fois
-                      if (passwordController.text.length == 8 &&
+                      if (passwordController.text.length >= 8 &&
                           passwordController.text == passwordController2.text) {
-                        //Vérifications que le mail a bien été rentré correctement 2 fois
-                        if (emailController.text == emailController2.text) {
                           //Inscription
                           auth.registerWithEmailAndPassword(
                               emailController.text, passwordController.text);
@@ -150,17 +148,15 @@ class RegisterPageState extends State<RegisterPage> {
                               db.collection("USERDATA").doc(userUid).set({
                                 "nom": nameController.text,
                                 "prénom": surnameController.text,
-                                "date_naissance": dateController.text
+                                "date_naissance": dateController.text,
+                                "admin": false,
+                                "super_admin": false
                               });
                               //Redirection vers page accueil activités
                               showAlertDialog(context);
                             }
                           });
-                        } else {
-                          //Pop up erreur mail, et on nettoie le champ mail 2
-                          showAlertDialogMail(context);
-                          emailController2.clear();
-                        }
+
                       } else {
                         //Pop up erreur mdp et on nettoie les 2 mdp
                         showAlertDialogMdp(context);
