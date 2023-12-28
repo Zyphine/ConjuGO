@@ -3,7 +3,7 @@ import 'package:conjugo/DrawerMenu.dart';
 
 //Page à propos
 class About extends StatelessWidget {
-  const About({super.key}); //Git GF test  test de sygufeyguefyyusefyeyguefygufe
+  const About({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class About extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-            "Application réalisée par : \n\n\n\n\n Jean-Guy Wintrebert \n\n Clément D'Elbreil \n\n Tristan Chauveau \n\n Matthias Ellero \n\n Etienne Dam Hieu \n\n\n FISE 2025 \n\n\n\n\n sous le tutorat de \n\n Mr Anthony Fleury, IMT Nord Europe \n\n Mme Anne Gogulski, CCAS Douai",
+            "Application réalisée par : \n\n\n Jean-Guy Wintrebert \n Clément D'Elbreil \n Tristan Chauveau \n Matthias Ellero \n Etienne Dam Hieu \n Guillaume Foissy \n Baptiste Fournier \n Léo Chouippe \n Théo Tarrou \n Amélie Shan \n\n FISE 2025 et 2026 \n\n\n sous le tutorat de \n Mr Anthony Fleury, IMT Nord Europe \n Mme Anne Gogulski, CCAS Douai",
             textAlign: TextAlign.center),
       ),
     );
