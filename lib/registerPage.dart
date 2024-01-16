@@ -42,7 +42,7 @@ bool passwordContainLetterAndNumber(String password) {
       appBar: AppBar(
         title: const Text("Inscrivez-vous"),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 232, 40, 152),
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
