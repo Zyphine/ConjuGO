@@ -27,12 +27,22 @@ class RegisterPageState extends State<RegisterPage> {
   TextEditingController surnameController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
+// Création fonction qui vérifie si le mot de passe contient au moins 1 lettre et 1 chiffre
+bool passwordContainLetterAndNumber(String password) {
+  // Vérifier la présence d'au moins une lettre
+  bool hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
+  // Vérifier la présence d'au moins un chiffre
+  bool hasNumber = password.contains(RegExp(r'[1234567890]'));
+  // Retourner true si le mot de passe respecte les critères, sinon false
+  return hasLetter && hasNumber;
+}
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Inscrivez-vous"),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 232, 40, 152),
+        backgroundColor: Colors.blue,
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
@@ -109,7 +119,7 @@ class RegisterPageState extends State<RegisterPage> {
                       selectAll: false,
                     ),
                     decoration: const InputDecoration(
-                        labelText: " Mot de Passe")),
+                        labelText: " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)")),
                 const SizedBox(height: 20),
                 TextFormField(
                     //MDP 2
@@ -134,7 +144,9 @@ class RegisterPageState extends State<RegisterPage> {
                         async {
                       //Vérifications que le mdp est dans le bon format et qu'il a bien été rédigé 2 fois
                       if (passwordController.text.length >= 8 &&
-                          passwordController.text == passwordController2.text) {
+                          passwordController.text == passwordController2.text &&
+                          passwordContainLetterAndNumber(passwordController.text) == true) {
+                        //Vérifications que le mail a bien été rentré correctement 2 fois
                           //Inscription
                           auth.registerWithEmailAndPassword(
                               emailController.text, passwordController.text);
