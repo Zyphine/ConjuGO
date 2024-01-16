@@ -45,7 +45,7 @@ class Activity {
     final data = snapshot.data();
 
     return Activity(
-        //les str entre crochets sont les noms des attributs que l'on souhaite sélectionnier
+        //les str entre crochets sont les noms des attributs que l'on souhaite sélectionner
         nom: data?['nom'],
         description: data?['description'],
         genre: data?['genre'].path,
