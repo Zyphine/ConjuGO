@@ -1,4 +1,6 @@
+import 'package:conjugo/AuthenticationService.dart';
 import 'package:conjugo/activityMap.dart';
+import 'package:conjugo/dashboard.dart';
 import 'package:conjugo/myActivities.dart';
 import 'package:conjugo/settings.dart';
 import 'package:conjugo/about.dart';
@@ -7,6 +9,9 @@ import 'package:conjugo/listActivity.dart';
 
 //Classe définissant le menu
 class DrawerMenu extends Drawer {
+  
+  AuthenticationService auth = AuthenticationService();
+
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -41,11 +46,11 @@ class DrawerMenu extends Drawer {
                     color: Color.fromARGB(255, 88, 180, 255),
                     child: ListTile(
                       leading: Icon(Icons.manage_search,
-                          color: Colors.blue, size: 40),
+                          color: Colors.black, size: 40),
                       title: Text('Liste activités',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.blue,
+                              color: Colors.black,
                               decoration: TextDecoration.underline)),
                     ))),
           ),
@@ -63,11 +68,11 @@ class DrawerMenu extends Drawer {
                     color: Color.fromARGB(255, 88, 180, 255),
                     child: ListTile(
                       leading: Icon(Icons.account_circle,
-                          color: Colors.blue, size: 40),
+                          color: Colors.black, size: 40),
                       title: Text('Mes activités',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.blue,
+                              color: Colors.black,
                               decoration: TextDecoration.underline)),
                     ))),
           ),
@@ -84,11 +89,11 @@ class DrawerMenu extends Drawer {
               child: const Card(
                   color: Color.fromARGB(255, 88, 180, 255),
                   child: ListTile(
-                    leading: Icon(Icons.map, color: Colors.blue, size: 40),
+                    leading: Icon(Icons.map, color: Colors.black, size: 40),
                     title: Text('Carte',
                         style: TextStyle(
                             fontSize: 25,
-                            color: Colors.blue,
+                            color: Colors.black,
                             decoration: TextDecoration.underline)),
                   )),
             ),
@@ -105,11 +110,11 @@ class DrawerMenu extends Drawer {
                   color: Color.fromARGB(255, 88, 180, 255),
                   child: ListTile(
                       leading:
-                          Icon(Icons.settings, color: Colors.blue, size: 40),
+                          Icon(Icons.settings, color: Colors.black, size: 40),
                       title: Text('Paramètres',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.blue,
+                              color: Colors.black,
                               decoration: TextDecoration.underline)))),
             ),
           ),
@@ -127,13 +132,55 @@ class DrawerMenu extends Drawer {
                     color: Color.fromARGB(255, 88, 180, 255),
                     child: ListTile(
                         leading: Icon(Icons.logout_outlined,
-                            color: Colors.blue, size: 40),
+                            color: Colors.black, size: 40),
                         title: Text('Se déconnecter',
                             style: TextStyle(
                                 fontSize: 25,
-                                color: Colors.blue,
+                                color: Colors.black,
                                 decoration: TextDecoration.underline)))),
               )),
+              //Vers la dashbord
+
+              FutureBuilder<bool>(
+                future: auth.isUserAdmin(), 
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(); // renvoi un container vide pendant l'attente
+                  } else if (snapshot.hasError) {
+                    return Container(); // renvoi un container vide en cas d'erreur
+                  } else {
+                    bool isAdmin = snapshot.data ?? false;
+
+                    // N'afficher le boutton vers le tableau de bord que si l'utilisateur est admin
+                    return isAdmin
+                        ? Padding(
+                            padding: EdgeInsets.only(bottom: 20),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                        pageBuilder: (_, __, ___) =>
+                                            DashboardPage()));
+                              },
+                              child: Card(
+                                color: Color.fromARGB(255, 88, 180, 255),
+                                child: ListTile(
+                                  leading: Icon(Icons.admin_panel_settings,
+                                      color: Colors.black, size: 40),
+                                  title: Text('Tableau de bord',
+                                      style: TextStyle(
+                                          fontSize: 25,
+                                          color: Colors.black,
+                                          decoration: TextDecoration.underline)),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(); // return an empty container if not an admin
+                  }
+                },
+              ),
           Padding(
             padding: EdgeInsets.only(bottom: 40),
             //A propos
@@ -146,7 +193,7 @@ class DrawerMenu extends Drawer {
                     textAlign: TextAlign.center,
                     "à propos",
                     style: TextStyle(
-                        color: Colors.blue,
+                        color: Colors.black,
                         decoration: TextDecoration.underline))),
           ),
           const Text("Conjugo-2023",
