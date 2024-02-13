@@ -39,7 +39,11 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
               const SizedBox(height: 10),
               TextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: null, //Aucune limite de ligne dans le texte de description
               ),
               const SizedBox(height: 10),
               TextField(
@@ -144,6 +148,10 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     _placeController.clear();
     _numberController.clear();
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Article published successfully')));
+    //affiche un message de confirmation
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Publication ajoutée avec succès'),
+      duration: Duration(seconds: 5),
+    ));
   }
 }
