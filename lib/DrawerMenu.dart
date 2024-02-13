@@ -16,22 +16,24 @@ class DrawerMenu extends Drawer {
     return Drawer(
       child: ListView(
         children: <Widget>[
-          DrawerHeader(
-              padding: EdgeInsets.only(top: 10),
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 122, 190, 246),
-              ),
-              child: Column(children: <Widget>[
-                const Text(
-                  'Menu',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                  ),
-                  textAlign: TextAlign.center,
+          SizedBox(
+            height: 300,
+            child : DrawerHeader(
+                padding: const EdgeInsets.only(top: 10),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 122, 190, 246),
                 ),
-                Image.asset('images/logo.png', height: 100),
-              ])),
+                child: Column(children: <Widget>[
+                  const Expanded(flex: 2,child : Text(
+                    'Menu',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 36,
+                    ),
+                    textAlign: TextAlign.center,
+                  )),
+                  Expanded(flex:8, child:Image.asset('images/logo.png', height: 300)),
+                ]))),
           Padding(
             padding: const EdgeInsets.only(top: 50, bottom: 20),
             //Vers liste de activités
@@ -46,80 +48,80 @@ class DrawerMenu extends Drawer {
                     color: Color.fromARGB(255, 88, 180, 255),
                     child: ListTile(
                       leading: Icon(Icons.manage_search,
-                          color: Colors.black, size: 40),
+                          color: Colors.white, size: 40),
                       title: Text('Liste activités',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.black,
+                              color: Colors.white,
                               decoration: TextDecoration.underline)),
                     ))),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 20),
             //Vers mes activités
             child: GestureDetector(
                 onTap: () {
                   Navigator.push(
                       context,
                       PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => MyActivities()));
+                          pageBuilder: (_, __, ___) => const MyActivities()));
                 },
                 child: const Card(
                     color: Color.fromARGB(255, 88, 180, 255),
                     child: ListTile(
                       leading: Icon(Icons.account_circle,
-                          color: Colors.black, size: 40),
+                          color: Colors.white, size: 40),
                       title: Text('Mes activités',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.black,
+                              color: Colors.white,
                               decoration: TextDecoration.underline)),
                     ))),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 20),
             //Vers la carte
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
                     context,
                     PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => ActivityMap()));
+                        pageBuilder: (_, __, ___) => const ActivityMap()));
               },
               child: const Card(
                   color: Color.fromARGB(255, 88, 180, 255),
                   child: ListTile(
-                    leading: Icon(Icons.map, color: Colors.black, size: 40),
+                    leading: Icon(Icons.map, color: Colors.white, size: 40),
                     title: Text('Carte',
                         style: TextStyle(
                             fontSize: 25,
-                            color: Colors.black,
+                            color: Colors.white,
                             decoration: TextDecoration.underline)),
                   )),
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 20),
             //Vers les paramètres
             child: GestureDetector(
               onTap: () {
                 Navigator.push(context,
-                    PageRouteBuilder(pageBuilder: (_, __, ___) => Settings()));
+                    PageRouteBuilder(pageBuilder: (_, __, ___) => const Settings()));
               },
               child: const Card(
                   color: Color.fromARGB(255, 88, 180, 255),
                   child: ListTile(
                       leading:
-                          Icon(Icons.settings, color: Colors.black, size: 40),
+                          Icon(Icons.settings, color: Colors.white, size: 40),
                       title: Text('Paramètres',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.black,
+                              color: Colors.white,
                               decoration: TextDecoration.underline)))),
             ),
           ),
           Padding(
-              padding: EdgeInsets.only(bottom: 20),
+              padding: const EdgeInsets.only(bottom: 20),
               //Vers la page d'accueil
               child: GestureDetector(
                 onTap: () {
@@ -132,11 +134,11 @@ class DrawerMenu extends Drawer {
                     color: Color.fromARGB(255, 88, 180, 255),
                     child: ListTile(
                         leading: Icon(Icons.logout_outlined,
-                            color: Colors.black, size: 40),
+                            color: Colors.white, size: 40),
                         title: Text('Se déconnecter',
                             style: TextStyle(
                                 fontSize: 25,
-                                color: Colors.black,
+                                color: Colors.white,
                                 decoration: TextDecoration.underline)))),
               )),
               //Vers la dashbord
@@ -154,7 +156,7 @@ class DrawerMenu extends Drawer {
                     // N'afficher le boutton vers le tableau de bord que si l'utilisateur est admin
                     return isAdmin
                         ? Padding(
-                            padding: EdgeInsets.only(bottom: 20),
+                            padding: const EdgeInsets.only(bottom: 20),
                             child: GestureDetector(
                               onTap: () {
                                 Navigator.push(
@@ -163,15 +165,15 @@ class DrawerMenu extends Drawer {
                                         pageBuilder: (_, __, ___) =>
                                             DashboardPage()));
                               },
-                              child: Card(
+                              child: const Card(
                                 color: Color.fromARGB(255, 88, 180, 255),
                                 child: ListTile(
                                   leading: Icon(Icons.admin_panel_settings,
-                                      color: Colors.black, size: 40),
+                                      color: Colors.white, size: 40),
                                   title: Text('Tableau de bord',
                                       style: TextStyle(
                                           fontSize: 25,
-                                          color: Colors.black,
+                                          color: Colors.white,
                                           decoration: TextDecoration.underline)),
                                 ),
                               ),
@@ -182,12 +184,12 @@ class DrawerMenu extends Drawer {
                 },
               ),
           Padding(
-            padding: EdgeInsets.only(bottom: 40),
+            padding: const EdgeInsets.only(bottom: 40),
             //A propos
             child: GestureDetector(
                 onTap: () {
                   Navigator.push(context,
-                      PageRouteBuilder(pageBuilder: (_, __, ___) => About()));
+                      PageRouteBuilder(pageBuilder: (_, __, ___) => const About()));
                 },
                 child: const Text(
                     textAlign: TextAlign.center,
