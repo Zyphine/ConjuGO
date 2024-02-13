@@ -1,5 +1,6 @@
 import 'package:conjugo/publishActivity.dart';
 import 'package:flutter/material.dart';
+import 'listActivity.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -19,7 +20,7 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             const Text(
-              'Manage Publications',
+              'Gérer les Publications',
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -38,13 +39,14 @@ class DashboardPage extends StatelessWidget {
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Text('View Publications'),
+                child: Text('Ajouter une Publication'),
               ),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                // Add your navigation logic or actions here
+                Navigator.push(context,
+                      PageRouteBuilder(pageBuilder: (_, __, ___) =>  ListViewHomeLayout()));
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.blue,
@@ -52,7 +54,7 @@ class DashboardPage extends StatelessWidget {
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Text('Add Publication'),
+                child: Text('Voir les Publications'),
               ),
             ),
           ],

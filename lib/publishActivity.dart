@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PublishArticlePage extends StatefulWidget {
   const PublishArticlePage({Key? key}) : super(key: key);
@@ -12,12 +13,14 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
+  final TextEditingController _numberController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Publish Article'),
+        title: const Text('Ajouter une publication'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -26,29 +29,50 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Titre'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(labelText: 'Description'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: _dateController,
-              decoration: InputDecoration(labelText: 'Date'),
-            ),
-            SizedBox(height: 10),
+              decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_today),
+                    labelText: "Date"),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2100));
+                  //On transforme la date au format souhaité
+                  if (pickedDate != null) {
+                    String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
+                    _dateController.text = formattedDate;
+                  } //else {
+                  //  print("Vous n'avez pas sélectionné de date");
+                  //}
+                }),
+            const SizedBox(height: 10),
             TextField(
               controller: _placeController,
-              decoration: InputDecoration(labelText: 'Place'),
+              decoration: const InputDecoration(labelText: 'Lieu'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _numberController,
+              decoration: const InputDecoration(labelText: 'Nombre de places'),
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 onSubmit();
               },
-              child: Text('Publish'),
+              child: const Text('Publier'),
             ),
           ],
         ),
