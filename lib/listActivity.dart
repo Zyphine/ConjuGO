@@ -85,10 +85,9 @@ class Activity {
     if (date2 != null) {
       initializeDateFormatting();
 
-      dateStr = DateFormat.yMMMMEEEEd('fr').format(date2) +
-          ' à ' +
-          DateFormat.Hm('fr').format(date2);
-    } else {
+      dateStr = DateFormat.yMMMMEEEEd('fr').format(date2) + ' à ' + DateFormat.Hm('fr').format(date2);
+    }
+    else {
       return date2.toString();
     }
 
@@ -138,7 +137,14 @@ class ListViewHome extends State<ListViewHomeLayout> {
         appBar: AppBar(
           title: const Text('Liste des Activités'),
           centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon : const Icon(Icons.search),
+              onPressed: (){},
+              )
+          ],
         ),
+        
         body: Center(
             child: Column(children: <Widget>[
           //Le future builder permet de réaliser l'action en 'future' avant de build la page
