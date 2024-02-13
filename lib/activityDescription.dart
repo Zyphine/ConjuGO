@@ -46,7 +46,7 @@ class DescriptionPage extends StatelessWidget {
                 Container(
                     //Places restantes
                     padding: const EdgeInsets.all(16.0),
-                    margin: EdgeInsets.only(bottom: 30),
+                    margin: EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.blue, width: 2)),
                     child: Column(
@@ -70,8 +70,9 @@ class DescriptionPage extends StatelessWidget {
             ),
             Container(
               //Date
+              margin: EdgeInsets.only(left: 25.0),
               width: 300,
-              height: 100,
+              height: 80,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,15 +81,16 @@ class DescriptionPage extends StatelessWidget {
                       style: TextStyle(color: Colors.blue, fontSize: 30),
                       textAlign: TextAlign.left),
                   Text(date,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+                      style: TextStyle(color: Colors.black, fontSize: 18),
                       textAlign: TextAlign.left),
                 ],
               ),
             ),
             Container(
               //Lieu
+              margin: EdgeInsets.only(left: 25.0),
               width: 300,
-              height: 100,
+              height: 80,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,15 +99,16 @@ class DescriptionPage extends StatelessWidget {
                       style: TextStyle(color: Colors.blue, fontSize: 30),
                       textAlign: TextAlign.left),
                   Text(lieu,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+                      style: TextStyle(color: Colors.black, fontSize: 18),
                       textAlign: TextAlign.left),
                 ],
               ),
             ),
             Container(
               //Description
+              margin: EdgeInsets.only(left: 25.0),
               width: 300,
-              height: 100,
+              height: 101,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +118,7 @@ class DescriptionPage extends StatelessWidget {
                       textAlign: TextAlign.left),
                   Text(
                     description,
-                    style: TextStyle(color: Colors.black, fontSize: 20),
+                    style: TextStyle(color: Colors.black, fontSize: 18),
                     textAlign: TextAlign.left,
                   ),
                 ],
@@ -123,7 +126,7 @@ class DescriptionPage extends StatelessWidget {
             ),
             Container(
                 //Bouton inscription
-                margin: EdgeInsets.only(left: 100.0, top: 20.0),
+                margin: EdgeInsets.only(left: 100.0, top: 50.0),
                 child: SizedBox(
                   width: 200,
                   height: 50,
