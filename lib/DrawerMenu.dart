@@ -179,7 +179,7 @@ class DrawerMenu extends Drawer {
                               ),
                             ),
                           )
-                        : Container(); // return an empty container if not an admin
+                        : Container(); //renvoi un container vide si l'utilisateur n'est pas administrateur
                   }
                 },
               ),
