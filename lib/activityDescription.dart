@@ -19,11 +19,12 @@ class DescriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          //Le titre de la page est le nom de l'activité sur laquelle nous avons appuyée
-          title: Text(nom),
-        ),
-        body: Column(
+      appBar: AppBar(
+        //Le titre de la page est le nom de l'activité sur laquelle nous avons appuyée
+        title: Text(nom),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -46,7 +47,7 @@ class DescriptionPage extends StatelessWidget {
                 Container(
                     //Places restantes
                     padding: const EdgeInsets.all(16.0),
-                    margin: EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: 0),
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.blue, width: 2)),
                     child: Column(
@@ -148,6 +149,8 @@ class DescriptionPage extends StatelessWidget {
                       ),
                 ))
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
