@@ -136,7 +136,14 @@ class ListViewHome extends State<ListViewHomeLayout> {
         appBar: AppBar(
           title: const Text('Liste des Activités'),
           centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon : const Icon(Icons.search),
+              onPressed: (){},
+              )
+          ],
         ),
+        
         body: Center(
             child: Column(children: <Widget>[
           //Le future builder permet de réaliser l'action en 'future' avant de build la page

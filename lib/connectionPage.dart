@@ -62,25 +62,38 @@ class ConnectionPageState extends State<ConnectionPage> {
                     auth.signInWithEmailAndPassword(
                         emailController.text, passwordController.text);
                     //On utilise un bool pour qu'on ne se connecte qu'une seule fois
-                    bool isConnected = false;
-                    if (!isConnected) {
+                    //bool isConnected = false;
+                    //if (!isConnected) {
                       //On vérifie si un utilisateur est connecté (se lance en future)
                       FirebaseAuth.instance
                           .authStateChanges()
                           .listen((User? user) {
-                        if (user != null) {
-                          isConnected = true;
-                          showAlertDialog(context);
+                        if (user == null) {
+                          showAlertDialogError(context);
+                          emailController.clear();
+                          passwordController.clear();
+                          
+                          //isConnected = true;
                         }
+
+                        else{
+                         showAlertDialog(context);
+                          
+                        }
+                        
                       });
+                      
                       //La pop up erreur est mise à l'extérieur de la fonction listen car sinon on a une erreur 'The showDialog function context parameter is a BuildContext that is no longer valid'
-                      showAlertDialogError(context);
+                      // showAlertDialogError(context);
                       //On nettoie les champs lorsque ce ne sont pas les bon id
-                      emailController.clear();
-                      passwordController.clear();
+                      //emailController.clear();
+                      //passwordController.clear();
                       // La pop up erreur s'affiche avant la pop up 'ok' car le test signin se fait en future, donc quand il teste le user il est pas encore connecté
 
-                    }
+                    //}
+                    
+                    
+                
                   }
                   //},
                   ))
@@ -148,11 +161,11 @@ class ConnectionPageState extends State<ConnectionPage> {
     );
 
     // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
   }
 }
