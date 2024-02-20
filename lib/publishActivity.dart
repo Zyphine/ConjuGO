@@ -124,15 +124,15 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     //Récupère les valeurs des controlleurs du formulaire
     String title = _titleController.text;
     String description = _descriptionController.text;
-    String date = _dateController.text;
+    DateTime date = DateTime.parse(_dateController.text);
     String place = _placeController.text;
-    String number = _numberController.text;
+    int number = int.parse(_numberController.text);
 
     CollectionReference users = FirebaseFirestore.instance.collection('ACTIVITYDATA');
 
     // Add a new document with a generated ID
     await users.add({
-      "title": title,
+      "name": title,
       "description": description,
       "date": date,
       "place": place,

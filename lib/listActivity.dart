@@ -12,7 +12,7 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 //Page liste des activités
 class ListViewHomeLayout extends StatefulWidget {
   @override
-  ListViewHomeLayout({super.key});
+  const ListViewHomeLayout({super.key});
 
   ListViewHome createState() => ListViewHome();
 }
@@ -20,21 +20,21 @@ class ListViewHomeLayout extends StatefulWidget {
 //Définition de la classe Activity -> on s'en sert pour récupérer les données, car on ne peut pas récupérer attribut par attribut, il faut tout prendre et séparer ensuite
 class Activity {
   //Initialisation des vars
-  String? nom = "";
+  String? name = "";
   String? description = "";
-  String? genre = "";
+  //String? genre = "";
   Timestamp? date;
-  String? lieu = "";
-  int? nbPlace = 0;
+  String? place = "";
+  int? numberOfRemainingEntries= 0;
 
   //Constructeur
   Activity({
-    this.nom,
+    this.name,
     this.description,
-    this.genre,
+    //this.genre,
     this.date,
-    this.lieu,
-    this.nbPlace,
+    this.place,
+    this.numberOfRemainingEntries,
   });
 
   //fonction de récupération des données
@@ -45,39 +45,39 @@ class Activity {
     final data = snapshot.data();
 
     return Activity(
-        //les str entre crochets sont les noms des attributs que l'on souhaite sélectionner
-        nom: data?['nom'],
+        //les str entre crochets sont les names des attributs que l'on souhaite sélectionner
+        name: data?['name'],
         description: data?['description'],
-        genre: data?['genre'].path,
+        //genre: data?['genre'].path,
         date: data?['date'],
-        lieu: data?['lieu'],
-        nbPlace: data?['nbPlace']);
+        place: data?['place'],
+        numberOfRemainingEntries: data?['numberOfRemainingEntries']);
   }
 
   //Fonction qui vérifie que les éléments ne soient pas null
   Map<String, dynamic> toFirestore() {
     return {
-      if (nom != null) 'nom': nom,
+      if (name != null) 'name': name,
       if (description != null) 'description': description,
-      if (genre != null) "genre": genre,
+      //if (genre != null) "genre": genre,
       if (date != null) "date": date,
-      if (lieu != null) "lieu": lieu,
-      if (nbPlace != null) "nbPlace": nbPlace,
+      if (place != null) "place": place,
+      if (numberOfRemainingEntries!= null) "numberOfRemainingEntries": numberOfRemainingEntries,
     };
   }
 
   //Getters
   String getName() {
-    return nom.toString();
+    return name.toString();
   }
 
   String getDescription() {
     return description.toString();
   }
 
-  String getGenre() {
+  /*String getGenre() {
     return genre.toString().substring(14);
-  }
+  }*/
 
   String getDate() {
     String dateStr;
@@ -93,12 +93,12 @@ class Activity {
     return dateStr[0].toUpperCase() + dateStr.substring(1);
   }
 
-  String getLieu() {
-    return lieu.toString();
+  String getplace() {
+    return place.toString();
   }
 
-  String getNbPlace() {
-    return nbPlace.toString();
+  String getnumberOfRemainingEntries() {
+    return numberOfRemainingEntries.toString();
   }
 }
 
@@ -163,10 +163,10 @@ class ListViewHome extends State<ListViewHomeLayout> {
                   titles.add(activityList[i].getName());
                   subtitles.add(activityList[i].getDescription());
                   date.add(activityList[i].getDate());
-                  place.add(activityList[i].getLieu());
-                  slot.add(activityList[i].getNbPlace());
+                  place.add(activityList[i].getplace());
+                  slot.add(activityList[i].getnumberOfRemainingEntries());
                   //On attribue un genre à un icone
-                  switch (activityList[i].getGenre()) {
+                  /*switch (activityList[i].getGenre()) {
                     case "sport":
                       icons.add(Icons.directions_bike);
                       break;
@@ -176,10 +176,10 @@ class ListViewHome extends State<ListViewHomeLayout> {
                     case "jeuSociete":
                       icons.add(Icons.casino);
                       break;
-                  }
+                  }*/
                 }
                 //On vide la liste des activités
-                if (activityList.length > 0) {
+                if (activityList.isNotEmpty) {
                   activityList = List.empty(growable: true);
                 }
 
@@ -205,13 +205,13 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                     PageRouteBuilder(
                                         pageBuilder: (_, __, ___) =>
                                             DescriptionPage(
-                                                nom: titles[index],
+                                                name: titles[index],
                                                 description: subtitles[index],
                                                 date: date[index],
-                                                lieu: place[index],
-                                                nbPlace: slot[index])));
+                                                place: place[index],
+                                                numberOfRemainingEntries: slot[index])));
                               },
-                              //Dans les cartes on affiche le nom de l'activité en titre, sa description en sous titre, et par défaut le logo est celui de la CCAS (à changer)
+                              //Dans les cartes on affiche le name de l'activité en titre, sa description en sous titre, et par défaut le logo est celui de la CCAS (à changer)
                               title: Text(titles[index]),
                               subtitle: Text(subtitles[index]),
                               leading: const CircleAvatar(
@@ -220,7 +220,8 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                       "https://assistance-sociale.fr/wp-content/uploads/2021/12/ccas-douai")),
                               // "https://play-lh.googleusercontent.com/YxX2N976KtZhh16FR7dhQ_ItAcmZnpDxLvhddhuv8Q9M7jiKpf8YKDgwaLWF3XBA2f8=w240-h480-rw"
 
-                              trailing: Icon(icons[index])));
+                              //trailing: Icon(icons[index])
+                            ));
                     });
               })
         ])));
