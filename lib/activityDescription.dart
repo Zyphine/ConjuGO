@@ -1,13 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 //Page description des activités
 class DescriptionPage extends StatelessWidget {
   String name;
   String description;
-  // String genre = ""; // Pas implémenté, à rajouter
   String date;
   String place;
-  String numberOfRemainingEntries;
+  int numberOfRemainingEntries;
+  String documentId;
   DescriptionPage(
       {super.key,
       //Définitions des éléments requis
@@ -15,7 +17,8 @@ class DescriptionPage extends StatelessWidget {
       required this.description,
       required this.date,
       required this.place,
-      required this.numberOfRemainingEntries});
+      required this.numberOfRemainingEntries,
+      required this.documentId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +63,7 @@ class DescriptionPage extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          numberOfRemainingEntries,
+                          numberOfRemainingEntries.toString(),
                           style: const TextStyle(color: Colors.blue, fontSize: 20),
                           textAlign: TextAlign.center,
                         ),
@@ -138,7 +141,7 @@ class DescriptionPage extends StatelessWidget {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(18.0),
                                     side: const BorderSide(color: Colors.black)))),
-                    onPressed: () => null,
+                    onPressed: () => registerParticipant(context),
                     //Pour l'instant ne fait rien, à implémenter. Soit avec systèmes favoris, soit inscription avec décompte des places
                     child: Text("Je m'inscris".toUpperCase(),
                         style: const TextStyle(fontSize: 14))
@@ -146,5 +149,32 @@ class DescriptionPage extends StatelessWidget {
                 ))
           ],
         ));
+  }
+
+  Future<void> registerParticipant(BuildContext context) async {
+    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+    publication.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        List tableParticipants = data["participants"]; //on récupère la liste des participants
+        tableParticipants.add(FirebaseAuth.instance.currentUser?.uid); //on ajoute l'utilisateur actuellement connecté
+        publication.update({"participants": tableParticipants}); //on met à jour le document
+        publication.update({"numberOfRemainingEntries": numberOfRemainingEntries-1}).then( //on enlève une place
+          (value) => showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text("Pré-inscription réussie"),
+              content: const Text("Vous êtes pré-inscrit avec succès \npensez à vous inscrire auprès de l'organisateur"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          )
+        );
+      }
+    );
   }
 }

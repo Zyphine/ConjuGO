@@ -60,9 +60,7 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
                     lastDate: DateTime(2100),
                   );
 
-                  // Check if a date is picked
                   if (pickedDate != null) {
-                    // Get the time
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.now(),
@@ -74,9 +72,8 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
                       }
                     );
 
-                    // Check if a time is picked
                     if (pickedTime != null) {
-                      // Combine date and time
+                      //combine l'heure et la date
                       DateTime combinedDateTime = DateTime(
                         pickedDate.year,
                         pickedDate.month,
@@ -85,10 +82,10 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
                         pickedTime.minute,
                       );
 
-                      // Format date and time as desired
+                      //change le format de date+heure
                       String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(combinedDateTime);
 
-                      // Update the text field
+                      //mise a jour du champ
                       _dateController.text = formattedDateTime;
                     }
                   }
@@ -128,10 +125,28 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     String place = _placeController.text;
     int number = int.parse(_numberController.text);
 
-    CollectionReference users = FirebaseFirestore.instance.collection('ACTIVITYDATA');
+    CollectionReference activities = FirebaseFirestore.instance.collection('ACTIVITYDATA');
 
-    // Add a new document with a generated ID
-    await users.add({
+    //Ajout d'un nouveau document dans la table des activités
+    DocumentReference docRef = activities.doc();
+
+    // On récupère l'ID du document
+    String documentId = docRef.id;
+
+    // Ajout des données dans le document
+    await docRef.set({
+      "documentId": documentId, //On stock l'ID pour pouvoir retrouver la publication au moment de l'inscription d'une personne
+      "name": title,
+      "description": description,
+      "date": date,
+      "place": place,
+      "maxNumber": number,
+      "numberOfRemainingEntries": number,
+      "participants": [],
+    });
+
+    /*//On ajoute un nouveau document avec un ID généré
+    await activities.add({
       "name": title,
       "description": description,
       "date": date,
@@ -139,9 +154,9 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
       "maxNumber": number,
       "numberOfRemainingEntries": number,
       "Participants": [],
-    });
+    });*/
     
-    //Supprime les valeur des controlleurs
+    //Supprime les valeurs des controlleurs
     _titleController.clear();
     _descriptionController.clear();
     _dateController.clear();

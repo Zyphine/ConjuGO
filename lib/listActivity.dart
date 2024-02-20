@@ -22,19 +22,19 @@ class Activity {
   //Initialisation des vars
   String? name = "";
   String? description = "";
-  //String? genre = "";
   Timestamp? date;
   String? place = "";
   int? numberOfRemainingEntries= 0;
+  String? documentId = "";
 
   //Constructeur
   Activity({
     this.name,
     this.description,
-    //this.genre,
     this.date,
     this.place,
     this.numberOfRemainingEntries,
+    this.documentId,
   });
 
   //fonction de récupération des données
@@ -48,10 +48,11 @@ class Activity {
         //les str entre crochets sont les names des attributs que l'on souhaite sélectionner
         name: data?['name'],
         description: data?['description'],
-        //genre: data?['genre'].path,
         date: data?['date'],
         place: data?['place'],
-        numberOfRemainingEntries: data?['numberOfRemainingEntries']);
+        numberOfRemainingEntries: data?['numberOfRemainingEntries'],
+        documentId : data?['documentId'],
+      );
   }
 
   //Fonction qui vérifie que les éléments ne soient pas null
@@ -59,10 +60,10 @@ class Activity {
     return {
       if (name != null) 'name': name,
       if (description != null) 'description': description,
-      //if (genre != null) "genre": genre,
       if (date != null) "date": date,
       if (place != null) "place": place,
       if (numberOfRemainingEntries!= null) "numberOfRemainingEntries": numberOfRemainingEntries,
+      if (documentId!= null) "documentId": documentId,
     };
   }
 
@@ -74,10 +75,6 @@ class Activity {
   String getDescription() {
     return description.toString();
   }
-
-  /*String getGenre() {
-    return genre.toString().substring(14);
-  }*/
 
   String getDate() {
     String dateStr;
@@ -99,6 +96,10 @@ class Activity {
 
   String getnumberOfRemainingEntries() {
     return numberOfRemainingEntries.toString();
+  }
+
+  String getDocumentId() {
+    return documentId.toString();
   }
 }
 
@@ -168,7 +169,8 @@ class ListViewHome extends State<ListViewHomeLayout> {
                 List<IconData> icons = List.empty(growable: true);
                 List<String> date = List.empty(growable: true);
                 List<String> place = List.empty(growable: true);
-                List<String> slot = List.empty(growable: true);
+                List<int> slot = List.empty(growable: true);
+                List<String> docIds = List.empty(growable: true);
 
                 //Pour chaque éléments, on vient séparer les attributs et les ranger dans des listes
                 for (int i = 0; i < activityList.length; i++) {
@@ -176,19 +178,8 @@ class ListViewHome extends State<ListViewHomeLayout> {
                   subtitles.add(activityList[i].getDescription());
                   date.add(activityList[i].getDate());
                   place.add(activityList[i].getplace());
-                  slot.add(activityList[i].getnumberOfRemainingEntries());
-                  //On attribue un genre à un icone
-                  /*switch (activityList[i].getGenre()) {
-                    case "sport":
-                      icons.add(Icons.directions_bike);
-                      break;
-                    case "culture":
-                      icons.add(Icons.museum);
-                      break;
-                    case "jeuSociete":
-                      icons.add(Icons.casino);
-                      break;
-                  }*/
+                  slot.add(int.parse(activityList[i].getnumberOfRemainingEntries()));
+                  docIds.add(activityList[i].getDocumentId());
                 }
                 //On vide la liste des activités
                 if (activityList.isNotEmpty) {
@@ -221,7 +212,8 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                                 description: subtitles[index],
                                                 date: date[index],
                                                 place: place[index],
-                                                numberOfRemainingEntries: slot[index])));
+                                                numberOfRemainingEntries: slot[index],
+                                                documentId : docIds[index])));
                               },
                               //Dans les cartes on affiche le name de l'activité en titre, sa description en sous titre, et par défaut le logo est celui de la CCAS (à changer)
                               title: Text(titles[index]),
@@ -229,10 +221,8 @@ class ListViewHome extends State<ListViewHomeLayout> {
                               leading: const CircleAvatar(
                                   //IMAGE DE L'ASSOCIATION (propre à chacune, enregistrée dans une base association)
                                   backgroundImage: NetworkImage(
-                                      "https://assistance-sociale.fr/wp-content/uploads/2021/12/ccas-douai")),
+                                      "https://www.eseg-douai.fr/mub-225-170-f3f3f3/15171/partenaire/5cf93cdcc9d5c_LOGOVILLEVERTICAL.png")),
                               // "https://play-lh.googleusercontent.com/YxX2N976KtZhh16FR7dhQ_ItAcmZnpDxLvhddhuv8Q9M7jiKpf8YKDgwaLWF3XBA2f8=w240-h480-rw"
-
-                              //trailing: Icon(icons[index])
                             ));
                     });
               })
