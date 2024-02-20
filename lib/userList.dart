@@ -41,13 +41,24 @@ class Personne{
 class UserListHome extends State<UserListPage>{
   @override
   Widget build(BuildContext context) {
+    final spacer = SizedBox(height: 10,);
     return Scaffold(
       drawer: DrawerMenu(),
       appBar: AppBar(
         title: const Text("Liste des Utilisateurs"),
         centerTitle: true,
       ),
-      body: Center(),
+      body: Center(
+        child: Column(children: <Widget>[
+              spacer,
+              SearchBar(
+                leading: Icon(Icons.search),
+                hintText: 'Rechercher un utilisateur',
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+              ),
+        ]
+      ),
+      )
     );
   }
 }
