@@ -60,9 +60,7 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
                     lastDate: DateTime(2100),
                   );
 
-                  // Check if a date is picked
                   if (pickedDate != null) {
-                    // Get the time
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.now(),
@@ -74,9 +72,8 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
                       }
                     );
 
-                    // Check if a time is picked
                     if (pickedTime != null) {
-                      // Combine date and time
+                      //combine l'heure et la date
                       DateTime combinedDateTime = DateTime(
                         pickedDate.year,
                         pickedDate.month,
@@ -85,10 +82,10 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
                         pickedTime.minute,
                       );
 
-                      // Format date and time as desired
+                      //change le format de date+heure
                       String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(combinedDateTime);
 
-                      // Update the text field
+                      //mise a jour du champ
                       _dateController.text = formattedDateTime;
                     }
                   }
@@ -130,7 +127,7 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
 
     CollectionReference users = FirebaseFirestore.instance.collection('ACTIVITYDATA');
 
-    // Add a new document with a generated ID
+    //On ajoute un nouveau document avec un ID généré
     await users.add({
       "name": title,
       "description": description,
@@ -141,7 +138,7 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
       "Participants": [],
     });
     
-    //Supprime les valeur des controlleurs
+    //Supprime les valeurs des controlleurs
     _titleController.clear();
     _descriptionController.clear();
     _dateController.clear();
