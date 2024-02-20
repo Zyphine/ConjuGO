@@ -125,10 +125,28 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     String place = _placeController.text;
     int number = int.parse(_numberController.text);
 
-    CollectionReference users = FirebaseFirestore.instance.collection('ACTIVITYDATA');
+    CollectionReference activities = FirebaseFirestore.instance.collection('ACTIVITYDATA');
 
-    //On ajoute un nouveau document avec un ID généré
-    await users.add({
+    //Ajout d'un nouveau document dans la table des activités
+    DocumentReference docRef = activities.doc();
+
+    // On récupère l'ID du document
+    String documentId = docRef.id;
+
+    // Ajout des données dans le document
+    await docRef.set({
+      "documentId": documentId, //On stock l'ID pour pouvoir retrouver la publication au moment de l'inscription d'une personne
+      "name": title,
+      "description": description,
+      "date": date,
+      "place": place,
+      "maxNumber": number,
+      "numberOfRemainingEntries": number,
+      "participants": [],
+    });
+
+    /*//On ajoute un nouveau document avec un ID généré
+    await activities.add({
       "name": title,
       "description": description,
       "date": date,
@@ -136,7 +154,7 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
       "maxNumber": number,
       "numberOfRemainingEntries": number,
       "Participants": [],
-    });
+    });*/
     
     //Supprime les valeurs des controlleurs
     _titleController.clear();
