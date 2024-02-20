@@ -39,7 +39,11 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
               const SizedBox(height: 10),
               TextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: null, //Aucune limite de ligne dans le texte de description
               ),
               const SizedBox(height: 10),
               TextField(
@@ -120,15 +124,15 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     //Récupère les valeurs des controlleurs du formulaire
     String title = _titleController.text;
     String description = _descriptionController.text;
-    String date = _dateController.text;
+    DateTime date = DateTime.parse(_dateController.text);
     String place = _placeController.text;
-    String number = _numberController.text;
+    int number = int.parse(_numberController.text);
 
     CollectionReference users = FirebaseFirestore.instance.collection('ACTIVITYDATA');
 
     // Add a new document with a generated ID
     await users.add({
-      "title": title,
+      "name": title,
       "description": description,
       "date": date,
       "place": place,
@@ -144,6 +148,10 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     _placeController.clear();
     _numberController.clear();
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Article published successfully')));
+    //affiche un message de confirmation
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Publication ajoutée avec succès'),
+      duration: Duration(seconds: 5),
+    ));
   }
 }
