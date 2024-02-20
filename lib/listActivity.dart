@@ -132,21 +132,33 @@ class ListViewHome extends State<ListViewHomeLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final spacer = SizedBox(height: 10);
     return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text('Liste des Activités'),
           centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon : const Icon(Icons.search),
-              onPressed: (){},
-              )
-          ],
+
+          //actions: <Widget>[
+
+            
+
+            //IconButton(
+              //icon : const Icon(Icons.search),
+              //onPressed: (){},
+              //)
+         // ],
         ),
         
         body: Center(
             child: Column(children: <Widget>[
+              spacer,
+              SearchBar(
+                leading: Icon(Icons.search),
+                hintText: 'Rechercher une activité',
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+              ),
+
           //Le future builder permet de réaliser l'action en 'future' avant de build la page
           FutureBuilder(
               future: dataFinder(activityList),
