@@ -11,6 +11,8 @@ class DescriptionPage extends StatelessWidget {
   String place;
   int numberOfRemainingEntries;
   String documentId;
+  int maxNumber;
+
   DescriptionPage(
       {super.key,
       //Définitions des éléments requis
@@ -19,7 +21,8 @@ class DescriptionPage extends StatelessWidget {
       required this.date,
       required this.place,
       required this.numberOfRemainingEntries,
-      required this.documentId});
+      required this.documentId,
+      required this.maxNumber});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -26,6 +26,7 @@ class Activity {
   String? place = "";
   int? numberOfRemainingEntries= 0;
   String? documentId = "";
+  int? maxNumber = 0;
 
   //Constructeur
   Activity({
@@ -35,6 +36,7 @@ class Activity {
     this.place,
     this.numberOfRemainingEntries,
     this.documentId,
+    this.maxNumber
   });
 
   //fonction de récupération des données
@@ -52,6 +54,7 @@ class Activity {
         place: data?['place'],
         numberOfRemainingEntries: data?['numberOfRemainingEntries'],
         documentId : data?['documentId'],
+        maxNumber : data?['maxNumber']
       );
   }
 
@@ -64,6 +67,7 @@ class Activity {
       if (place != null) "place": place,
       if (numberOfRemainingEntries!= null) "numberOfRemainingEntries": numberOfRemainingEntries,
       if (documentId!= null) "documentId": documentId,
+      if (maxNumber!= null) "maxNumber": maxNumber
     };
   }
 
@@ -100,6 +104,10 @@ class Activity {
 
   String getDocumentId() {
     return documentId.toString();
+  }
+
+  String getMaxNumber() {
+    return maxNumber.toString();
   }
 }
 
@@ -171,6 +179,7 @@ class ListViewHome extends State<ListViewHomeLayout> {
                 List<String> place = List.empty(growable: true);
                 List<int> slot = List.empty(growable: true);
                 List<String> docIds = List.empty(growable: true);
+                List<int> maxSlots = List.empty(growable: true);
 
                 //Pour chaque éléments, on vient séparer les attributs et les ranger dans des listes
                 for (int i = 0; i < activityList.length; i++) {
@@ -180,6 +189,7 @@ class ListViewHome extends State<ListViewHomeLayout> {
                   place.add(activityList[i].getplace());
                   slot.add(int.parse(activityList[i].getnumberOfRemainingEntries()));
                   docIds.add(activityList[i].getDocumentId());
+                  maxSlots.add(int.parse(activityList[i].getMaxNumber()));
                 }
                 //On vide la liste des activités
                 if (activityList.isNotEmpty) {
@@ -213,7 +223,8 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                                 date: date[index],
                                                 place: place[index],
                                                 numberOfRemainingEntries: slot[index],
-                                                documentId : docIds[index])));
+                                                documentId : docIds[index],
+                                                maxNumber : maxSlots[index])));
                               },
                               //Dans les cartes on affiche le name de l'activité en titre, sa description en sous titre, et par défaut le logo est celui de la CCAS (à changer)
                               title: Text(titles[index]),
