@@ -35,8 +35,8 @@ class DashboardPage extends StatelessWidget {
                       PageRouteBuilder(pageBuilder: (_, __, ___) => const PublishArticlePage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.white,
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
@@ -50,8 +50,8 @@ class DashboardPage extends StatelessWidget {
                       PageRouteBuilder(pageBuilder: (_, __, ___) =>  ListViewHomeLayout()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.white,
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
@@ -65,8 +65,8 @@ class DashboardPage extends StatelessWidget {
                       PageRouteBuilder(pageBuilder: (_, __, ___) =>  UserListPage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.white,
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
