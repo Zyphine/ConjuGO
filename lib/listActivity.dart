@@ -31,7 +31,6 @@ class Activity {
   Activity({
     this.name,
     this.description,
-    //this.genre,
     this.date,
     this.place,
     this.numberOfRemainingEntries,
@@ -48,7 +47,6 @@ class Activity {
         //les str entre crochets sont les names des attributs que l'on souhaite sélectionner
         name: data?['name'],
         description: data?['description'],
-        //genre: data?['genre'].path,
         date: data?['date'],
         place: data?['place'],
         numberOfRemainingEntries: data?['numberOfRemainingEntries']);
@@ -74,10 +72,6 @@ class Activity {
   String getDescription() {
     return description.toString();
   }
-
-  /*String getGenre() {
-    return genre.toString().substring(14);
-  }*/
 
   String getDate() {
     String dateStr;
@@ -177,18 +171,6 @@ class ListViewHome extends State<ListViewHomeLayout> {
                   date.add(activityList[i].getDate());
                   place.add(activityList[i].getplace());
                   slot.add(activityList[i].getnumberOfRemainingEntries());
-                  //On attribue un genre à un icone
-                  /*switch (activityList[i].getGenre()) {
-                    case "sport":
-                      icons.add(Icons.directions_bike);
-                      break;
-                    case "culture":
-                      icons.add(Icons.museum);
-                      break;
-                    case "jeuSociete":
-                      icons.add(Icons.casino);
-                      break;
-                  }*/
                 }
                 //On vide la liste des activités
                 if (activityList.isNotEmpty) {
@@ -231,8 +213,6 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                   backgroundImage: NetworkImage(
                                       "https://assistance-sociale.fr/wp-content/uploads/2021/12/ccas-douai")),
                               // "https://play-lh.googleusercontent.com/YxX2N976KtZhh16FR7dhQ_ItAcmZnpDxLvhddhuv8Q9M7jiKpf8YKDgwaLWF3XBA2f8=w240-h480-rw"
-
-                              //trailing: Icon(icons[index])
                             ));
                     });
               })
