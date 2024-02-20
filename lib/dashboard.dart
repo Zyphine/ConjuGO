@@ -1,6 +1,7 @@
 import 'package:conjugo/publishActivity.dart';
 import 'package:flutter/material.dart';
 import 'listActivity.dart';
+import 'userList.dart';
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -34,8 +35,8 @@ class DashboardPage extends StatelessWidget {
                       PageRouteBuilder(pageBuilder: (_, __, ___) => const PublishArticlePage()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.white,
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
@@ -46,17 +47,33 @@ class DashboardPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context,
-                      PageRouteBuilder(pageBuilder: (_, __, ___) =>  ListViewHomeLayout()));
+                      PageRouteBuilder(pageBuilder: (_, __, ___) =>  const ListViewHomeLayout()));
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.white,
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text('Voir les Publications'),
               ),
             ),
+            const SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                      PageRouteBuilder(pageBuilder: (_, __, ___) =>  UserListPage()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('Voir les Utilisateurs'),
+              ),
+            ),
+
           ],
         ),
       ),

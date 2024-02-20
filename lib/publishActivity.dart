@@ -1,4 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class PublishArticlePage extends StatefulWidget {
@@ -24,92 +28,130 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Titre'),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _dateController,
-              decoration: const InputDecoration(
-                    icon: Icon(Icons.calendar_today),
-                    labelText: "Date"),
+        child : SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(labelText: 'Titre'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: null, //Aucune limite de ligne dans le texte de description
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _dateController,
+                decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_today),
+                      labelText: "Date"),
                 readOnly: true,
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2100));
-                  //On transforme la date au format souhaité
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+
+                  // Check if a date is picked
                   if (pickedDate != null) {
-                    String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
-                    _dateController.text = formattedDate;
-                  } //else {
-                  //  print("Vous n'avez pas sélectionné de date");
-                  //}
-                }),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _placeController,
-              decoration: const InputDecoration(labelText: 'Lieu'),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _numberController,
-              decoration: const InputDecoration(labelText: 'Nombre de places'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                onSubmit();
-              },
-              child: const Text('Publier'),
-            ),
-          ],
+                    // Get the time
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      }
+                    );
+
+                    // Check if a time is picked
+                    if (pickedTime != null) {
+                      // Combine date and time
+                      DateTime combinedDateTime = DateTime(
+                        pickedDate.year,
+                        pickedDate.month,
+                        pickedDate.day,
+                        pickedTime.hour,
+                        pickedTime.minute,
+                      );
+
+                      // Format date and time as desired
+                      String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(combinedDateTime);
+
+                      // Update the text field
+                      _dateController.text = formattedDateTime;
+                    }
+                  }
+                }
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _placeController,
+                decoration: const InputDecoration(labelText: 'Lieu'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _numberController,
+                decoration: const InputDecoration(labelText: 'Nombre de places'),
+                keyboardType: TextInputType.number, //Ouvre un clavier numérique uniquement
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly], //Ne permet qu'un nombre entier
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  onSubmit();
+                },
+                child: const Text('Publier'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void onSubmit() {
-    // Retrieve values from text controllers
+  Future<void> onSubmit() async {
+    //Récupère les valeurs des controlleurs du formulaire
     String title = _titleController.text;
     String description = _descriptionController.text;
-    String date = _dateController.text;
+    DateTime date = DateTime.parse(_dateController.text);
     String place = _placeController.text;
+    int number = int.parse(_numberController.text);
 
-    // Perform actions with the article data
-    // For example, you can send the data to an API or perform other actions.
+    CollectionReference users = FirebaseFirestore.instance.collection('ACTIVITYDATA');
+
+    // Add a new document with a generated ID
+    await users.add({
+      "name": title,
+      "description": description,
+      "date": date,
+      "place": place,
+      "maxNumber": number,
+      "numberOfRemainingEntries": number,
+      "Participants": [],
+    });
     
-    // Reset text controllers after submission (optional)
+    //Supprime les valeur des controlleurs
     _titleController.clear();
     _descriptionController.clear();
     _dateController.clear();
     _placeController.clear();
+    _numberController.clear();
 
-    // Optionally, you can navigate to another page or show a success message
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => NextPage()));
-    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Article published successfully')));
+    //affiche un message de confirmation
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Publication ajoutée avec succès'),
+      duration: Duration(seconds: 5),
+    ));
   }
 }
-
-// To use this page, you can call it from another widget like a button press:
-
-// ElevatedButton(
-//   onPressed: () {
-//     Navigator.push(
-//       context,
-//       MaterialPageRoute(builder: (context) => PublishArticlePage()),
-//     );
-//   },
-//   child: Text('Open Publish Article Page'),
-// )
