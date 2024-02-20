@@ -140,32 +140,32 @@ class ListViewHome extends State<ListViewHomeLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final spacer = SizedBox(height: 10);
+    //final spacer = SizedBox(height: 10);
     return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text('Liste des Activités'),
           centerTitle: true,
-
-          //actions: <Widget>[
-
-            
-
-            //IconButton(
-              //icon : const Icon(Icons.search),
-              //onPressed: (){},
-              //)
-         // ],
+          actions: <Widget>[
+              IconButton(
+              icon : const Icon(Icons.search),
+              onPressed: (){
+                showSearch(
+                  context: context,
+                  delegate: MySearchDelegate(),);
+              },
+              )
+          ],
         ),
         
         body: Center(
             child: Column(children: <Widget>[
-              spacer,
-              SearchBar(
-                leading: Icon(Icons.search),
-                hintText: 'Rechercher une activité',
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-              ),
+             // spacer,
+              //SearchBar(
+                //leading: Icon(Icons.search),
+                //hintText: 'Rechercher une activité',
+                //backgroundColor: MaterialStateProperty.all(Colors.white),
+              //),
 
           //Le future builder permet de réaliser l'action en 'future' avant de build la page
           FutureBuilder(
@@ -238,5 +238,79 @@ class ListViewHome extends State<ListViewHomeLayout> {
                     });
               })
         ])));
+  }
+}
+
+class MySearchDelegate extends SearchDelegate{
+  List<String> searchTerms = [
+    'Visite',
+    'Jeu',
+    'Numérique',
+    'Club',
+    'Restauration',
+    'Sport',
+    'Navettes',
+  ];
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return[
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: (){
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: (){
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var activities in searchTerms){
+      if(activities.toLowerCase().contains(query.toLowerCase())){
+        matchQuery.add(activities);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index){
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var activities in searchTerms){
+      if(activities.toLowerCase().contains(query.toLowerCase())){
+        matchQuery.add(activities);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index){
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+          onTap: (){
+            query=result;
+          },
+        );
+      },
+    );
   }
 }
