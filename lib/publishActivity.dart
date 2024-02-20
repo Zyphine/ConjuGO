@@ -144,17 +144,6 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
       "numberOfRemainingEntries": number,
       "participants": [],
     });
-
-    /*//On ajoute un nouveau document avec un ID généré
-    await activities.add({
-      "name": title,
-      "description": description,
-      "date": date,
-      "place": place,
-      "maxNumber": number,
-      "numberOfRemainingEntries": number,
-      "Participants": [],
-    });*/
     
     //Supprime les valeurs des controlleurs
     _titleController.clear();

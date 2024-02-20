@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:conjugo/listActivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,8 @@ class DescriptionPage extends StatelessWidget {
   String place;
   int numberOfRemainingEntries;
   String documentId;
+  int maxNumber;
+
   DescriptionPage(
       {super.key,
       //Définitions des éléments requis
@@ -18,7 +21,8 @@ class DescriptionPage extends StatelessWidget {
       required this.date,
       required this.place,
       required this.numberOfRemainingEntries,
-      required this.documentId});
+      required this.documentId,
+      required this.maxNumber});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,6 +156,7 @@ class DescriptionPage extends StatelessWidget {
   }
 
   Future<void> registerParticipant(BuildContext context) async {
+    print("inscription en cours");
     final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
     publication.get().then(
       (DocumentSnapshot doc) {
@@ -167,7 +172,10 @@ class DescriptionPage extends StatelessWidget {
               content: const Text("Vous êtes pré-inscrit avec succès \npensez à vous inscrire auprès de l'organisateur"),
               actions: <Widget>[
                 TextButton(
-                  onPressed: () => Navigator.pop(context, 'OK'),
+                  onPressed: () => {Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ListViewHomeLayout()),
+                    )},
                   child: const Text('OK'),
                 ),
               ],

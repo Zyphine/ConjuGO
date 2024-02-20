@@ -42,7 +42,7 @@ class DrawerMenu extends Drawer {
                   Navigator.push(
                       context,
                       PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => ListViewHomeLayout()));
+                          pageBuilder: (_, __, ___) => const ListViewHomeLayout()));
                 },
                 child: const Card(
                     color: Color.fromARGB(255, 88, 180, 255),
