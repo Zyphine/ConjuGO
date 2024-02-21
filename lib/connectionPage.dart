@@ -114,7 +114,7 @@ class ConnectionPageState extends State<ConnectionPage> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => ListViewHomeLayout(),
+                builder: (context) => const ListViewHomeLayout(),
               ),
               (Route<dynamic> route) => false);
         }
@@ -147,14 +147,14 @@ class ConnectionPageState extends State<ConnectionPage> {
   showAlertDialogError(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: const Text("OK"),
       onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Erreur"),
-      content: Text("Mail ou mot de passe invalide. Veuillez réessayer."),
+      title: const Text("Erreur"),
+      content: const Text("Mail ou mot de passe invalide. Veuillez réessayer."),
       actions: [
         okButton,
       ],

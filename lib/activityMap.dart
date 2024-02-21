@@ -13,7 +13,7 @@ class ActivityMap extends StatelessWidget {
         title: const Text("Carte"),
         centerTitle: true,
       ),
-      body: Center(),
+      body: const Center(),
     );
   }
 }

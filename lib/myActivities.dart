@@ -13,7 +13,7 @@ class MyActivities extends StatelessWidget {
         title: const Text("Mes activités"),
         centerTitle: true,
       ),
-      body: Center(),
+      body: const Center(),
     );
   }
 }

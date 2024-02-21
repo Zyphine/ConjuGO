@@ -7,7 +7,7 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 
 class UserListPage extends StatefulWidget {
   @override
-  UserListPage({super.key});
+  const UserListPage({super.key});
 
   UserListHome createState() => UserListHome();
 }
@@ -41,7 +41,7 @@ class Personne{
 class UserListHome extends State<UserListPage>{
   @override
   Widget build(BuildContext context) {
-    final spacer = SizedBox(height: 10,);
+    const spacer = SizedBox(height: 10,);
     return Scaffold(
       drawer: DrawerMenu(),
       appBar: AppBar(
@@ -52,7 +52,7 @@ class UserListHome extends State<UserListPage>{
         child: Column(children: <Widget>[
               spacer,
               SearchBar(
-                leading: Icon(Icons.search),
+                leading: const Icon(Icons.search),
                 hintText: 'Rechercher un utilisateur',
                 backgroundColor: MaterialStateProperty.all(Colors.white),
               ),
