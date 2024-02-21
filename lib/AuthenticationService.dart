@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AuthenticationService {
   //Création d'une instance de la classe Auth de Firebase
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+
   //Création d'une instance de la classe firestore de Firebase
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -59,10 +59,11 @@ class AuthenticationService {
   Future<bool> isUserAdmin() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-        //Récupère le champ booléen admin depuis firebase
-        DocumentSnapshot<Map<String, dynamic>> snapshot = await db.collection('USERDATA').doc(user.uid).get();
-        dynamic isAdmin = snapshot.data()?['admin'];
-        return isAdmin;
+      //Récupère le champ booléen admin depuis firebase
+      DocumentSnapshot<Map<String, dynamic>> snapshot =
+          await db.collection('USERDATA').doc(user.uid).get();
+      dynamic isAdmin = snapshot.data()?['admin'];
+      return isAdmin;
     } else {
       print('Aucun utilisateur connecté.');
       return false;
