@@ -1,10 +1,10 @@
-import 'package:conjugo/activityDescription.dart';
+import 'package:conjugo/activity_description.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:conjugo/DrawerMenu.dart';
+import 'package:conjugo/drawer_menu.dart';
 
 //Création d'une instance de dialogue avec la bdd
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -174,7 +174,6 @@ class ListViewHome extends State<ListViewHomeLayout> {
                 //Initialisation des listes pour chaque attributs
                 List<String> titles = List.empty(growable: true);
                 List<String> subtitles = List.empty(growable: true);
-                List<IconData> icons = List.empty(growable: true);
                 List<String> date = List.empty(growable: true);
                 List<String> place = List.empty(growable: true);
                 List<int> slot = List.empty(growable: true);
@@ -210,7 +209,6 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                       (titles.length + 1).toString());
                                   subtitles.add('Description' +
                                       (titles.length + 1).toString());
-                                  icons.add(Icons.zoom_out_sharp);
                                 });
                                 //Renvoie vers la page descrition de l'activité cliquée, avec en paramètres les attributs de cette dernière
                                 Navigator.push(

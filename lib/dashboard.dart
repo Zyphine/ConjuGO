@@ -1,9 +1,11 @@
-import 'package:conjugo/publishActivity.dart';
+import 'package:conjugo/publish_activity.dart';
 import 'package:flutter/material.dart';
-import 'listActivity.dart';
-import 'userList.dart';
+import 'list_activity.dart';
+import 'user_list.dart';
 
 class DashboardPage extends StatelessWidget {
+  const DashboardPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

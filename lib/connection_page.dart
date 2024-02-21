@@ -1,10 +1,8 @@
-// ignore_for_file: file_names, prefer_const_constructors_in_immutables
-
-import 'package:conjugo/listActivity.dart';
+import 'package:conjugo/list_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:conjugo/AuthenticationService.dart';
+import 'package:conjugo/authentication_service.dart';
 
 //Création des instances de dialogue avec la bdd (firestore) et d'authentification (auth)
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -18,11 +16,11 @@ class ConnectionPage extends StatefulWidget {
 }
 
 class ConnectionPageState extends State<ConnectionPage> {
-  @override
   //Définition des champs textuels
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

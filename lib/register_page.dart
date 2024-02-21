@@ -1,10 +1,9 @@
-import 'package:conjugo/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
-import 'package:conjugo/AuthenticationService.dart';
+import 'package:conjugo/authentication_service.dart';
 
 // Création instance pour communiquer avec la base + partie authentification
 FirebaseFirestore db = FirebaseFirestore.instance;
