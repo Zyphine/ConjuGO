@@ -12,6 +12,8 @@ class DrawerMenu extends Drawer {
   
   AuthenticationService auth = AuthenticationService();
 
+  DrawerMenu({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -161,10 +163,11 @@ class DrawerMenu extends Drawer {
                             child: GestureDetector(
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                            DashboardPage()));
+                                  context,
+                                  PageRouteBuilder(
+                                      pageBuilder: (_, __, ___) => const DashboardPage()
+                                  )
+                                );
                               },
                               child: const Card(
                                 color: Color.fromARGB(255, 88, 180, 255),
