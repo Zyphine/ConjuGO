@@ -1,10 +1,8 @@
-// ignore_for_file: file_names, prefer_const_constructors_in_immutables
-
-import 'package:conjugo/listActivity.dart';
+import 'package:conjugo/list_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:conjugo/AuthenticationService.dart';
+import 'package:conjugo/authentication_service.dart';
 
 //Création des instances de dialogue avec la bdd (firestore) et d'authentification (auth)
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -18,11 +16,11 @@ class ConnectionPage extends StatefulWidget {
 }
 
 class ConnectionPageState extends State<ConnectionPage> {
-  @override
   //Définition des champs textuels
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -114,7 +112,7 @@ class ConnectionPageState extends State<ConnectionPage> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => ListViewHomeLayout(),
+                builder: (context) => const ListViewHomeLayout(),
               ),
               (Route<dynamic> route) => false);
         }
@@ -147,14 +145,14 @@ class ConnectionPageState extends State<ConnectionPage> {
   showAlertDialogError(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: const Text("OK"),
       onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Erreur"),
-      content: Text("Mail ou mot de passe invalide. Veuillez réessayer."),
+      title: const Text("Erreur"),
+      content: const Text("Mail ou mot de passe invalide. Veuillez réessayer."),
       actions: [
         okButton,
       ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:conjugo/DrawerMenu.dart';
+import 'package:conjugo/drawer_menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 
@@ -7,8 +7,9 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 
 class UserListPage extends StatefulWidget {
   @override
-  UserListPage({super.key});
+  const UserListPage({super.key});
 
+  @override
   UserListHome createState() => UserListHome();
 }
 
@@ -41,13 +42,24 @@ class Personne{
 class UserListHome extends State<UserListPage>{
   @override
   Widget build(BuildContext context) {
+    const spacer = SizedBox(height: 10,);
     return Scaffold(
       drawer: DrawerMenu(),
       appBar: AppBar(
         title: const Text("Liste des Utilisateurs"),
         centerTitle: true,
       ),
-      body: Center(),
+      body: Center(
+        child: Column(children: <Widget>[
+              spacer,
+              SearchBar(
+                leading: const Icon(Icons.search),
+                hintText: 'Rechercher un utilisateur',
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+              ),
+        ]
+      ),
+      )
     );
   }
 }

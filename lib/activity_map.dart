@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:conjugo/DrawerMenu.dart';
+import 'package:conjugo/drawer_menu.dart';
 
 //Page Carte, à implémenter
 class ActivityMap extends StatelessWidget {
@@ -13,7 +13,7 @@ class ActivityMap extends StatelessWidget {
         title: const Text("Carte"),
         centerTitle: true,
       ),
-      body: Center(),
+      body: const Center(),
     );
   }
 }

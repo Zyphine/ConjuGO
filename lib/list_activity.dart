@@ -1,10 +1,10 @@
-import 'package:conjugo/activityDescription.dart';
+import 'package:conjugo/activity_description.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:conjugo/DrawerMenu.dart';
+import 'package:conjugo/drawer_menu.dart';
 
 //Création d'une instance de dialogue avec la bdd
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -22,20 +22,21 @@ class Activity {
   //Initialisation des vars
   String? name = "";
   String? description = "";
-  //String? genre = "";
   Timestamp? date;
   String? place = "";
   int? numberOfRemainingEntries = 0;
+  String? documentId = "";
+  int? maxNumber = 0;
 
   //Constructeur
-  Activity({
-    this.name,
-    this.description,
-    //this.genre,
-    this.date,
-    this.place,
-    this.numberOfRemainingEntries,
-  });
+  Activity(
+      {this.name,
+      this.description,
+      this.date,
+      this.place,
+      this.numberOfRemainingEntries,
+      this.documentId,
+      this.maxNumber});
 
   //fonction de récupération des données
   factory Activity.fromFirestore(
@@ -48,10 +49,11 @@ class Activity {
         //les str entre crochets sont les names des attributs que l'on souhaite sélectionner
         name: data?['name'],
         description: data?['description'],
-        //genre: data?['genre'].path,
         date: data?['date'],
         place: data?['place'],
-        numberOfRemainingEntries: data?['numberOfRemainingEntries']);
+        numberOfRemainingEntries: data?['numberOfRemainingEntries'],
+        documentId: data?['documentId'],
+        maxNumber: data?['maxNumber']);
   }
 
   //Fonction qui vérifie que les éléments ne soient pas null
@@ -59,11 +61,12 @@ class Activity {
     return {
       if (name != null) 'name': name,
       if (description != null) 'description': description,
-      //if (genre != null) "genre": genre,
       if (date != null) "date": date,
       if (place != null) "place": place,
       if (numberOfRemainingEntries != null)
         "numberOfRemainingEntries": numberOfRemainingEntries,
+      if (documentId != null) "documentId": documentId,
+      if (maxNumber != null) "maxNumber": maxNumber
     };
   }
 
@@ -75,10 +78,6 @@ class Activity {
   String getDescription() {
     return description.toString();
   }
-
-  /*String getGenre() {
-    return genre.toString().substring(14);
-  }*/
 
   String getDate() {
     String dateStr;
@@ -102,6 +101,14 @@ class Activity {
 
   String getnumberOfRemainingEntries() {
     return numberOfRemainingEntries.toString();
+  }
+
+  String getDocumentId() {
+    return documentId.toString();
+  }
+
+  String getMaxNumber() {
+    return maxNumber.toString();
   }
 }
 
@@ -134,6 +141,7 @@ class ListViewHome extends State<ListViewHomeLayout> {
 
   @override
   Widget build(BuildContext context) {
+    //final spacer = SizedBox(height: 10);
     return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
@@ -142,12 +150,24 @@ class ListViewHome extends State<ListViewHomeLayout> {
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.search),
-              onPressed: () {},
+              onPressed: () {
+                showSearch(
+                  context: context,
+                  delegate: MySearchDelegate(),
+                );
+              },
             )
           ],
         ),
         body: Center(
             child: Column(children: <Widget>[
+          // spacer,
+          //SearchBar(
+          //leading: Icon(Icons.search),
+          //hintText: 'Rechercher une activité',
+          //backgroundColor: MaterialStateProperty.all(Colors.white),
+          //),
+
           //Le future builder permet de réaliser l'action en 'future' avant de build la page
           FutureBuilder(
               future: dataFinder(activityList),
@@ -155,10 +175,11 @@ class ListViewHome extends State<ListViewHomeLayout> {
                 //Initialisation des listes pour chaque attributs
                 List<String> titles = List.empty(growable: true);
                 List<String> subtitles = List.empty(growable: true);
-                List<IconData> icons = List.empty(growable: true);
                 List<String> date = List.empty(growable: true);
                 List<String> place = List.empty(growable: true);
-                List<String> slot = List.empty(growable: true);
+                List<int> slot = List.empty(growable: true);
+                List<String> docIds = List.empty(growable: true);
+                List<int> maxSlots = List.empty(growable: true);
 
                 //Pour chaque éléments, on vient séparer les attributs et les ranger dans des listes
                 for (int i = 0; i < activityList.length; i++) {
@@ -166,19 +187,10 @@ class ListViewHome extends State<ListViewHomeLayout> {
                   subtitles.add(activityList[i].getDescription());
                   date.add(activityList[i].getDate());
                   place.add(activityList[i].getplace());
-                  slot.add(activityList[i].getnumberOfRemainingEntries());
-                  //On attribue un genre à un icone
-                  /*switch (activityList[i].getGenre()) {
-                    case "sport":
-                      icons.add(Icons.directions_bike);
-                      break;
-                    case "culture":
-                      icons.add(Icons.museum);
-                      break;
-                    case "jeuSociete":
-                      icons.add(Icons.casino);
-                      break;
-                  }*/
+                  slot.add(
+                      int.parse(activityList[i].getnumberOfRemainingEntries()));
+                  docIds.add(activityList[i].getDocumentId());
+                  maxSlots.add(int.parse(activityList[i].getMaxNumber()));
                 }
                 //On vide la liste des activités
                 if (activityList.isNotEmpty) {
@@ -199,7 +211,6 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                 'Activité' + (titles.length + 1).toString());
                             subtitles.add(
                                 'Description' + (titles.length + 1).toString());
-                            icons.add(Icons.zoom_out_sharp);
                           });
                           //Renvoie vers la page descrition de l'activité cliquée, avec en paramètres les attributs de cette dernière
                           Navigator.push(
@@ -210,7 +221,9 @@ class ListViewHome extends State<ListViewHomeLayout> {
                                       description: subtitles[index],
                                       date: date[index],
                                       place: place[index],
-                                      numberOfRemainingEntries: slot[index])));
+                                      numberOfRemainingEntries: slot[index],
+                                      documentId: docIds[index],
+                                      maxNumber: maxSlots[index])));
                         },
                         //Dans les cartes on affiche le name de l'activité en titre, sa description en sous titre, et par défaut le logo est celui de la CCAS (à changer)
                         title: Text(titles[index]),
@@ -218,13 +231,85 @@ class ListViewHome extends State<ListViewHomeLayout> {
                         leading: const CircleAvatar(
                             //IMAGE DE L'ASSOCIATION (propre à chacune, enregistrée dans une base association)
                             backgroundImage: NetworkImage(
-                                "https://assistance-sociale.fr/wp-content/uploads/2021/12/ccas-douai")),
+                                "https://www.eseg-douai.fr/mub-225-170-f3f3f3/15171/partenaire/5cf93cdcc9d5c_LOGOVILLEVERTICAL.png")),
                         // "https://play-lh.googleusercontent.com/YxX2N976KtZhh16FR7dhQ_ItAcmZnpDxLvhddhuv8Q9M7jiKpf8YKDgwaLWF3XBA2f8=w240-h480-rw"
-
-                        //trailing: Icon(icons[index])
                       ));
                     });
               })
         ])));
+  }
+}
+
+class MySearchDelegate extends SearchDelegate {
+  List<String> searchTerms = [
+    'Visite',
+    'Jeu',
+    'Numérique',
+    'Club',
+    'Restauration',
+    'Sport',
+    'Navettes',
+  ];
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var activities in searchTerms) {
+      if (activities.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(activities);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var activities in searchTerms) {
+      if (activities.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(activities);
+      }
+    }
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+          onTap: () {
+            query = result;
+          },
+        );
+      },
+    );
   }
 }
