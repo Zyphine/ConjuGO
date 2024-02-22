@@ -217,9 +217,12 @@ class ListViewHome extends State<ListViewHomeLayout> {
                               leading: const CircleAvatar(
                                   //IMAGE DE L'ASSOCIATION (propre à chacune, enregistrée dans une base association)
                                   backgroundImage: NetworkImage(
-                                      "https://www.eseg-douai.fr/mub-225-170-f3f3f3/15171/partenaire/5cf93cdcc9d5c_LOGOVILLEVERTICAL.png")),
+                                      "https://www.eseg-douai.fr/mub-225-170-f3f3f3/15171/partenaire/5cf93cdcc9d5c_LOGOVILLEVERTICAL.png"
+                                    )
+                              ),
                               // "https://play-lh.googleusercontent.com/YxX2N976KtZhh16FR7dhQ_ItAcmZnpDxLvhddhuv8Q9M7jiKpf8YKDgwaLWF3XBA2f8=w240-h480-rw"
-                            ));
+                            )
+                        );
                     });
               })
         ])));
