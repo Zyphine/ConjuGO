@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:conjugo/drawer_menu.dart';
+import 'package:conjugo/search_widget.dart';
 
 //Création d'une instance de dialogue avec la bdd
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -137,35 +138,21 @@ class ListViewHome extends State<ListViewHomeLayout> {
 
   //Initialisation de la liste d'activités
   List<Activity> activityList = List.empty(growable: true);
+  String query = '';
+
 
   @override
   Widget build(BuildContext context) {
-    //final spacer = SizedBox(height: 10);
     return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text('Liste des Activités'),
           centerTitle: true,
-          actions: <Widget>[
-              IconButton(
-              icon : const Icon(Icons.search),
-              onPressed: (){
-                showSearch(
-                  context: context,
-                  delegate: MySearchDelegate(),);
-              },
-              )
-          ],
         ),
         
         body: Center(
             child: Column(children: <Widget>[
-             // spacer,
-              //SearchBar(
-                //leading: Icon(Icons.search),
-                //hintText: 'Rechercher une activité',
-                //backgroundColor: MaterialStateProperty.all(Colors.white),
-              //),
+             buildSearch(),
 
           //Le future builder permet de réaliser l'action en 'future' avant de build la page
           FutureBuilder(
@@ -237,78 +224,24 @@ class ListViewHome extends State<ListViewHomeLayout> {
               })
         ])));
   }
-}
+  Widget buildSearch() => SearchWidget(
+    text: query,
+    hintText: 'Rechercher une activité',
+    onChanged: searchActivity,
+  );
 
-class MySearchDelegate extends SearchDelegate{
-  List<String> searchTerms = [
-    'Visite',
-    'Jeu',
-    'Numérique',
-    'Club',
-    'Restauration',
-    'Sport',
-    'Navettes',
-  ];
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return[
-      IconButton(
-        icon: const Icon(Icons.clear),
-        onPressed: (){
-          query = '';
-        },
-      ),
-    ];
-  }
+  void searchActivity(String query){
+    final activity = activityList.where((activity){
+      final nameLower = activity.name?.toLowerCase();
+      final descriptionLower = activity.description?.toLowerCase();
+      final searchLower = query.toLowerCase();
 
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: (){
-        close(context, null);
-      },
-    );
-  }
+      return nameLower!.contains(searchLower) || descriptionLower!.contains(searchLower);
+    }).toList();
 
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var activities in searchTerms){
-      if(activities.toLowerCase().contains(query.toLowerCase())){
-        matchQuery.add(activities);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index){
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var activities in searchTerms){
-      if(activities.toLowerCase().contains(query.toLowerCase())){
-        matchQuery.add(activities);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index){
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-          onTap: (){
-            query=result;
-          },
-        );
-      },
-    );
+    setState(() {
+      this.query = query;
+      this.activityList = activity;
+    });
   }
 }
