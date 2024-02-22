@@ -1,8 +1,8 @@
-import 'package:conjugo/connectionPage.dart';
-import 'package:conjugo/registerPage.dart';
+import 'package:conjugo/connection_page.dart';
+import 'package:conjugo/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:conjugo/AuthenticationService.dart';
+import 'package:conjugo/authentication_service.dart';
 
 //Création d'une instance de la classe Authentification
 AuthenticationService auth = AuthenticationService();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:conjugo/DrawerMenu.dart';
+import 'package:conjugo/drawer_menu.dart';
 
 //Page paramètres, à implémenter
 class Settings extends StatelessWidget {
@@ -13,7 +13,7 @@ class Settings extends StatelessWidget {
         title: const Text("Paramètres"),
         centerTitle: true,
       ),
-      body: Center(),
+      body: const Center(),
     );
   }
 }

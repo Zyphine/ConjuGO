@@ -1,10 +1,9 @@
-import 'package:conjugo/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
-import 'package:conjugo/AuthenticationService.dart';
+import 'package:conjugo/authentication_service.dart';
 
 // Création instance pour communiquer avec la base + partie authentification
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -186,7 +185,7 @@ bool passwordContainLetterAndNumber(String password) {
   showAlertDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: const Text("OK"),
       onPressed: () {
         Navigator.of(context).pop();
         if (mounted) {
@@ -198,8 +197,8 @@ bool passwordContainLetterAndNumber(String password) {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Incriptions effectuée"),
-      content: Text("Vous êtes inscrit, retour à la page d'accueil."),
+      title: const Text("Incriptions effectuée"),
+      content: const Text("Vous êtes inscrit, retour à la page d'accueil."),
       actions: [
         okButton,
       ],
@@ -219,14 +218,14 @@ bool passwordContainLetterAndNumber(String password) {
   showAlertDialogMail(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: const Text("OK"),
       onPressed: () => Navigator.of(context).pop(),
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Erreur"),
-      content: Text("Mails non identiques"),
+      title: const Text("Erreur"),
+      content: const Text("Mails non identiques"),
       actions: [
         okButton,
       ],
@@ -273,14 +272,14 @@ bool passwordContainLetterAndNumber(String password) {
   showAlertDialogMdp(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: const Text("OK"),
       onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Erreur"),
-      content: Text(
+      title: const Text("Erreur"),
+      content: const Text(
           "Mots de passes différents ou au mauvais format \n Vérfiez qu'ils soient sous la forme JOUR MOIS ANNEE-> JJMMAAAA"),
       actions: [
         okButton,

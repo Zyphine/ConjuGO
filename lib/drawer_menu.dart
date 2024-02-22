@@ -1,17 +1,20 @@
-import 'package:conjugo/AuthenticationService.dart';
-import 'package:conjugo/activityMap.dart';
+import 'package:conjugo/authentication_service.dart';
+import 'package:conjugo/activity_map.dart';
 import 'package:conjugo/dashboard.dart';
-import 'package:conjugo/myActivities.dart';
+import 'package:conjugo/my_activities.dart';
 import 'package:conjugo/settings.dart';
 import 'package:conjugo/about.dart';
 import 'package:flutter/material.dart';
-import 'package:conjugo/listActivity.dart';
+import 'package:conjugo/list_activity.dart';
 
 //Classe définissant le menu
 class DrawerMenu extends Drawer {
   
   AuthenticationService auth = AuthenticationService();
 
+  DrawerMenu({super.key});
+
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -42,7 +45,7 @@ class DrawerMenu extends Drawer {
                   Navigator.push(
                       context,
                       PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => ListViewHomeLayout()));
+                          pageBuilder: (_, __, ___) => const ListViewHomeLayout()));
                 },
                 child: const Card(
                     color: Color.fromARGB(255, 88, 180, 255),
@@ -160,10 +163,11 @@ class DrawerMenu extends Drawer {
                             child: GestureDetector(
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                            DashboardPage()));
+                                  context,
+                                  PageRouteBuilder(
+                                      pageBuilder: (_, __, ___) => const DashboardPage()
+                                  )
+                                );
                               },
                               child: const Card(
                                 color: Color.fromARGB(255, 88, 180, 255),
