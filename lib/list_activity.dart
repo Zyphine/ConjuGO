@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:conjugo/drawer_menu.dart';
+import 'package:conjugo/search_widget.dart';
 
 //Création d'une instance de dialogue avec la bdd
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -138,35 +139,19 @@ class ListViewHome extends State<ListViewHomeLayout> {
 
   //Initialisation de la liste d'activités
   List<Activity> activityList = List.empty(growable: true);
+  String query = '';
+
 
   @override
   Widget build(BuildContext context) {
-    //final spacer = SizedBox(height: 10);
     return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text('Liste des Activités'),
           centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                showSearch(
-                  context: context,
-                  delegate: MySearchDelegate(),
-                );
-              },
-            )
-          ],
         ),
         body: Center(
             child: Column(children: <Widget>[
-          // spacer,
-          //SearchBar(
-          //leading: Icon(Icons.search),
-          //hintText: 'Rechercher une activité',
-          //backgroundColor: MaterialStateProperty.all(Colors.white),
-          //),
 
           //Le future builder permet de réaliser l'action en 'future' avant de build la page
           FutureBuilder(
@@ -204,112 +189,4 @@ class ListViewHome extends State<ListViewHomeLayout> {
                     itemBuilder: (context, index) {
                       //Les activités sont en format carte
                       return Card(
-                          child: ListTile(
-                        onTap: () {
-                          setState(() {
-                            titles.add(
-                                'Activité' + (titles.length + 1).toString());
-                            subtitles.add(
-                                'Description' + (titles.length + 1).toString());
-                          });
-                          //Renvoie vers la page descrition de l'activité cliquée, avec en paramètres les attributs de cette dernière
-                          Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) => DescriptionPage(
-                                      name: titles[index],
-                                      description: subtitles[index],
-                                      date: date[index],
-                                      place: place[index],
-                                      numberOfRemainingEntries: slot[index],
-                                      documentId: docIds[index],
-                                      maxNumber: maxSlots[index])));
-                        },
-                        //Dans les cartes on affiche le name de l'activité en titre, sa description en sous titre, et par défaut le logo est celui de la CCAS (à changer)
-                        title: Text(titles[index]),
-                        subtitle: Text(subtitles[index]),
-                        leading: const CircleAvatar(
-                            //IMAGE DE L'ASSOCIATION (propre à chacune, enregistrée dans une base association)
-                            backgroundImage: NetworkImage(
-                                "https://www.eseg-douai.fr/mub-225-170-f3f3f3/15171/partenaire/5cf93cdcc9d5c_LOGOVILLEVERTICAL.png")),
-                        // "https://play-lh.googleusercontent.com/YxX2N976KtZhh16FR7dhQ_ItAcmZnpDxLvhddhuv8Q9M7jiKpf8YKDgwaLWF3XBA2f8=w240-h480-rw"
-                      ));
-                    });
-              })
-        ])));
-  }
-}
-
-class MySearchDelegate extends SearchDelegate {
-  List<String> searchTerms = [
-    'Visite',
-    'Jeu',
-    'Numérique',
-    'Club',
-    'Restauration',
-    'Sport',
-    'Navettes',
-  ];
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var activities in searchTerms) {
-      if (activities.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(activities);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var activities in searchTerms) {
-      if (activities.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(activities);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-          onTap: () {
-            query = result;
-          },
-        );
-      },
-    );
-  }
-}
+                          child: ListTile()
