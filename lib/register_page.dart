@@ -19,7 +19,6 @@ class RegisterPage extends StatefulWidget {
 class RegisterPageState extends State<RegisterPage> {
   //Initialisation des champs textuels
   TextEditingController emailController = TextEditingController();
-  TextEditingController emailController2 = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordController2 = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -88,24 +87,14 @@ bool passwordContainLetterAndNumber(String password) {
                     //Mail
                     controller: emailController,
                     toolbarOptions: const ToolbarOptions(
-                      //Rendre impossible les copier-coller
+                      //Rendre possible les copier-coller
                       copy: true,
                       cut: true,
                       paste: true, //Peut-être pas besoin car déjà "true" de base
                       selectAll: true,
                     ),
                     decoration: const InputDecoration(labelText: " Mail")),
-               /*TextFormField(
-                    //Mail 2
-                    controller: emailController2,
-                    toolbarOptions: const ToolbarOptions(
-                      copy: false,
-                      cut: false,
-                      paste: false,
-                      selectAll: false,
-                    ),
-                    decoration: const InputDecoration(
-                        labelText: " Rentrez votre mail une seconde fois")),*/
+               
                 const SizedBox(height: 20),
                 TextFormField(
                     // MDP
@@ -158,10 +147,11 @@ bool passwordContainLetterAndNumber(String password) {
                               //Insertion des infos user dans la base firestore
                               db.collection("USERDATA").doc(userUid).set({
                                 "nom": nameController.text,
-                                "prénom": surnameController.text,
-                                "date_naissance": dateController.text,
+                                "prenom": surnameController.text,
+                                "dateDeNaissance": dateController.text,
                                 "admin": false,
-                                "super_admin": false
+                                "superAdmin": false,
+                                "mail": emailController.text
                               });
                               //Redirection vers page accueil activités
                               showAlertDialog(context);
