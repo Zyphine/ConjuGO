@@ -11,7 +11,7 @@ AuthenticationService auth = AuthenticationService();
 
 //Page inscription
 class RegisterPage extends StatefulWidget {
-  RegisterPage({super.key});
+  const RegisterPage({super.key});
   @override
   RegisterPageState createState() => RegisterPageState();
 }
@@ -35,6 +35,7 @@ bool passwordContainLetterAndNumber(String password) {
   return hasLetter && hasNumber;
 }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

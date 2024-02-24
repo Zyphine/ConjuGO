@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:conjugo/activity_participants.dart';
 import 'package:conjugo/connection_page.dart';
 import 'package:conjugo/list_activity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -145,7 +146,7 @@ class DescriptionPage extends StatelessWidget {
 
                   // N'afficher le boutton supprimer que si l'utilisateur est admin
                   return isAdmin? ElevatedButton(
-                    onPressed: () => deletePublication(context),
+                    onPressed: () => toParticipantsList(context),
                     style: ButtonStyle(
                       maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
                       minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
@@ -222,6 +223,22 @@ class DescriptionPage extends StatelessWidget {
                 ),
               ],
             ),
+          )
+        );
+      }
+    );
+  }
+
+  Future<void> toParticipantsList(BuildContext context) async {
+    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+    publication.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        List tableParticipants = data["participants"]; //on récupère la liste des participants
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+              pageBuilder: (_, __, ___) => ActivityParticipantsPage(participants : tableParticipants)
           )
         );
       }

@@ -11,6 +11,7 @@ class UserListPage extends StatefulWidget {
   const UserListPage({super.key});
 
   
+  @override
   UserListHome createState() => UserListHome();
 }
 
@@ -284,7 +285,7 @@ class UserListHome extends State<UserListPage>{
 
     setState(() {
       this.query = query;
-      this.personneList = personne;
+      personneList = personne;
     });
   }
 }

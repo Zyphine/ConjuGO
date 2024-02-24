@@ -10,7 +10,7 @@ AuthenticationService auth = AuthenticationService();
 
 //Page de connexion
 class ConnectionPage extends StatefulWidget {
-  ConnectionPage({super.key});
+  const ConnectionPage({super.key});
   @override
   State<ConnectionPage> createState() => ConnectionPageState();
 }

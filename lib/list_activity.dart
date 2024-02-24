@@ -15,6 +15,7 @@ class ListViewHomeLayout extends StatefulWidget {
   @override
   const ListViewHomeLayout({super.key});
 
+  @override
   ListViewHome createState() => ListViewHome();
 }
 
@@ -28,6 +29,7 @@ class Activity {
   int? numberOfRemainingEntries= 0;
   String? documentId = "";
   int? maxNumber = 0;
+
 
   //Constructeur
   Activity({
@@ -244,7 +246,7 @@ class ListViewHome extends State<ListViewHomeLayout> {
 
     setState(() {
       this.query = query;
-      this.activityList = activity;
+      activityList = activity;
     });
   }
 }
