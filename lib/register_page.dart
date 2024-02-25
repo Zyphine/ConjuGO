@@ -85,6 +85,7 @@ bool passwordContainLetterAndNumber(String password) {
                     }),
                 const SizedBox(height: 20),
                 TextFormField(
+                  
                     //Mail
                     controller: emailController,
                     toolbarOptions: const ToolbarOptions(
