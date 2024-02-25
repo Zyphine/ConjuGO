@@ -4,6 +4,7 @@ import 'package:conjugo/connection_page.dart';
 import 'package:conjugo/list_activity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 //Page description des activités
 class DescriptionPage extends StatelessWidget {
@@ -285,5 +286,31 @@ class DescriptionPage extends StatelessWidget {
         ],
       ),
     );
-  } 
+  }
+
+  Future<bool> isParticipating() async {
+    String userId;
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      userId = user.uid;
+    } else {
+      return true;
+    }
+
+    bool result = true;
+    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+    publication.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        List tableParticipants = data["participants"]; //on récupère la liste des participants
+        for (int i = 0; i < tableParticipants.length; i++) {
+          if (tableParticipants[i]==userId) {
+            result = true;
+          } 
+        }
+      }
+    );
+
+    return result;
+  }
 }

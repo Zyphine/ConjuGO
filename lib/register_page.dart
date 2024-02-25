@@ -140,6 +140,7 @@ bool passwordContainLetterAndNumber(String password) {
                           String userUid = auth.getUser();
                           //Insertion des infos user dans la base firestore
                           db.collection("USERDATA").doc(userUid).set({
+                            "userId" : userUid,
                             "nom": nameController.text,
                             "prenom": surnameController.text,
                             "dateDeNaissance": dateController.text,
