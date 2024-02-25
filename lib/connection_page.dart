@@ -112,7 +112,7 @@ class ConnectionPageState extends State<ConnectionPage> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const ListViewHomeLayout(),
+                builder: (context) => ListViewHomeLayout(),
               ),
               (Route<dynamic> route) => false);
         }
