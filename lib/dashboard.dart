@@ -10,7 +10,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Publication Dashboard'),
+        title: const Text('Tableau de bord'),
       ),
       body: Center(
         child: Column(
