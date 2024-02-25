@@ -74,7 +74,7 @@ class DrawerMenu extends Drawer {
                 child: const Card(
                     color: Color.fromARGB(255, 88, 180, 255),
                     child: ListTile(
-                      leading: Icon(Icons.account_circle,
+                      leading: Icon(Icons.favorite,
                           color: Colors.white, size: 40),
                       title: Text('Mes activités',
                           style: TextStyle(
@@ -101,8 +101,10 @@ class DrawerMenu extends Drawer {
                         style: TextStyle(
                             fontSize: 25,
                             color: Colors.white,
-                            decoration: TextDecoration.underline)),
-                  )),
+                            decoration: TextDecoration.underline)
+                    ),
+                  )
+              ),
             ),
           ),
           Padding(
@@ -122,7 +124,10 @@ class DrawerMenu extends Drawer {
                           style: TextStyle(
                               fontSize: 25,
                               color: Colors.white,
-                              decoration: TextDecoration.underline)))),
+                              decoration: TextDecoration.underline)
+                      )
+                  )
+              ),
             ),
           ),
           Padding(
@@ -135,6 +140,7 @@ class DrawerMenu extends Drawer {
                 MaterialPageRoute(builder: (context) => const HomePage()),
                 );
             },
+
               child: const Card(
                 color: Color.fromARGB(255, 88, 180, 255),
                 child: ListTile(

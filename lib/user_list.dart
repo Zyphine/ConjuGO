@@ -1,3 +1,4 @@
+import 'package:conjugo/drawer_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conjugo/search_widget.dart';
@@ -19,6 +20,7 @@ class Personne {
   String? dateDeNaissance = "";
   bool? superAdmin = false;
   String? mail = "";
+  String? userId = "";
 
   Personne({
     this.nom,
@@ -27,6 +29,7 @@ class Personne {
     this.dateDeNaissance,
     this.superAdmin,
     this.mail,
+    this.userId,
   });
 
   factory Personne.fromFirestore(
@@ -42,6 +45,7 @@ class Personne {
       dateDeNaissance: data?['dateDeNaissance'],
       superAdmin: data?['superAdmin'],
       mail: data?['mail'],
+      userId: data?['userId']
     );
   }
 
@@ -51,6 +55,7 @@ class Personne {
   String getDateDeNaissance() => dateDeNaissance.toString();
   String getSuperAdmin() => superAdmin.toString();
   String getMail() => mail.toString();
+  String getUserId() => userId.toString();
 }
 
 class UserListHome extends State<UserListPage> {
@@ -67,6 +72,7 @@ class UserListHome extends State<UserListPage> {
   Widget build(BuildContext context) {
     if (personneList.isEmpty) {
       return Scaffold(
+        drawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text("Liste des Utilisateurs"),
           centerTitle: true,
@@ -75,6 +81,7 @@ class UserListHome extends State<UserListPage> {
       );
     } else {
       return Scaffold(
+        drawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text("Liste des Utilisateurs"),
           centerTitle: true,
@@ -100,12 +107,16 @@ class UserListHome extends State<UserListPage> {
                               mail: personne.getMail(),
                               admin: bool.parse(personne.getAdmin()),
                               superAdmin: bool.parse(personne.getSuperAdmin()),
+                              userId: personne.getUserId(),
                             ),
                           ),
                         );
                       },
                       title: Text("${personne.getNom()} ${personne.getPrenom()}"),
                       subtitle: Text(personne.getMail()),
+                      leading: const Icon(Icons.account_circle),
+                        
+                      
                     ),
                   );
                 },
