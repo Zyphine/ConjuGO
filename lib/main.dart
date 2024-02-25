@@ -63,7 +63,7 @@ class MyHomePage extends StatelessWidget {
                   Navigator.push(
                       context,
                       PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => ConnectionPage()));
+                          pageBuilder: (_, __, ___) => const ConnectionPage()));
                 },
                 child: const Text("Connectez-Vous")),
           ),
@@ -75,7 +75,7 @@ class MyHomePage extends StatelessWidget {
                     Navigator.push(
                         context,
                         PageRouteBuilder(
-                            pageBuilder: (_, __, ___) => RegisterPage()));
+                            pageBuilder: (_, __, ___) => const RegisterPage()));
                   },
                   child: const Text("Enregistrez-Vous"))),
         ]),

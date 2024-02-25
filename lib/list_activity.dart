@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:conjugo/drawer_menu.dart';
+import 'package:conjugo/search_widget.dart';
 
 //Création d'une instance de dialogue avec la bdd
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -14,6 +15,7 @@ class ListViewHomeLayout extends StatefulWidget {
   @override
   const ListViewHomeLayout({super.key});
 
+  @override
   ListViewHome createState() => ListViewHome();
 }
 
@@ -138,10 +140,10 @@ class ListViewHome extends State<ListViewHomeLayout> {
 
   //Initialisation de la liste d'activités
   List<Activity> activityList = List.empty(growable: true);
+  String query = '';
 
   @override
   Widget build(BuildContext context) {
-    //final spacer = SizedBox(height: 10);
     return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
