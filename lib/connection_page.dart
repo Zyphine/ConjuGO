@@ -31,70 +31,67 @@ class ConnectionPageState extends State<ConnectionPage> {
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
         child: Column(children: [
-          Container(
-            child: Form(
-                child: Column(children: <Widget>[
-              //Mail
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                    labelText: " Veuillez rentrer votre mail"),
-              ),
-              //MDP
-              const SizedBox(height: 20),
-              TextFormField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                    labelText:
-                        " Veuillez rentrer votre mot de passe au format JJMMAAAA"),
-              ),
-            ])),
-          ),
-          Container(
-              child: ElevatedButton(
-                  //Bouton qui lance la fonction de connexion de Auth
-                  child: const Text("Se connecter"),
-                  onPressed: () {
-                    auth.signInWithEmailAndPassword(
-                        emailController.text, passwordController.text);
-                    //On utilise un bool pour qu'on ne se connecte qu'une seule fois
-                    //bool isConnected = false;
-                    //if (!isConnected) {
-                      //On vérifie si un utilisateur est connecté (se lance en future)
-                      FirebaseAuth.instance
-                          .authStateChanges()
-                          .listen((User? user) {
-                        if (user == null) {
-                          showAlertDialogError(context);
-                          emailController.clear();
-                          passwordController.clear();
-                          
-                          //isConnected = true;
-                        }
-
-                        else{
-                         showAlertDialog(context);
-                          
-                        }
-                        
-                      });
+          Form(
+              child: Column(children: <Widget>[
+            //Mail
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                  labelText: " Veuillez rentrer votre mail"),
+            ),
+            //MDP
+            const SizedBox(height: 20),
+            TextFormField(
+              obscureText: true,
+              controller: passwordController,
+              decoration: const InputDecoration(
+                  labelText:
+                      " Veuillez rentrer votre mot de passe au format JJMMAAAA"),
+            ),
+          ])),
+          ElevatedButton(
+              //Bouton qui lance la fonction de connexion de Auth
+              child: const Text("Se connecter"),
+              onPressed: () {
+                auth.signInWithEmailAndPassword(
+                    emailController.text, passwordController.text);
+                //On utilise un bool pour qu'on ne se connecte qu'une seule fois
+                //bool isConnected = false;
+                //if (!isConnected) {
+                  //On vérifie si un utilisateur est connecté (se lance en future)
+                  FirebaseAuth.instance
+                      .authStateChanges()
+                      .listen((User? user) {
+                    if (user == null) {
+                      showAlertDialogError(context);
+                      emailController.clear();
+                      passwordController.clear();
                       
-                      //La pop up erreur est mise à l'extérieur de la fonction listen car sinon on a une erreur 'The showDialog function context parameter is a BuildContext that is no longer valid'
-                      // showAlertDialogError(context);
-                      //On nettoie les champs lorsque ce ne sont pas les bon id
-                      //emailController.clear();
-                      //passwordController.clear();
-                      // La pop up erreur s'affiche avant la pop up 'ok' car le test signin se fait en future, donc quand il teste le user il est pas encore connecté
+                      //isConnected = true;
+                    }
 
-                    //}
+                    else{
+                     showAlertDialog(context);
+                      
+                    }
                     
-                    
+                  });
+                  
+                  //La pop up erreur est mise à l'extérieur de la fonction listen car sinon on a une erreur 'The showDialog function context parameter is a BuildContext that is no longer valid'
+                  // showAlertDialogError(context);
+                  //On nettoie les champs lorsque ce ne sont pas les bon id
+                  //emailController.clear();
+                  //passwordController.clear();
+                  // La pop up erreur s'affiche avant la pop up 'ok' car le test signin se fait en future, donc quand il teste le user il est pas encore connecté
+
+                //}
                 
-                  }
-                  //},
-                  ))
+                
+            
+              }
+              //},
+              )
         ]),
       ),
     );
@@ -112,7 +109,7 @@ class ConnectionPageState extends State<ConnectionPage> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => ListViewHomeLayout(),
+                builder: (context) => const ListViewHomeLayout(),
               ),
               (Route<dynamic> route) => false);
         }

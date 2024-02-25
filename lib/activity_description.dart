@@ -217,7 +217,7 @@ class DescriptionPage extends StatelessWidget {
                 TextButton(
                   onPressed: () => {Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ListViewHomeLayout()),
+                      MaterialPageRoute(builder: (context) => const ListViewHomeLayout()),
                     )},
                   child: const Text('OK'),
                 ),
@@ -238,7 +238,7 @@ class DescriptionPage extends StatelessWidget {
         Navigator.push(
           context,
           PageRouteBuilder(
-              pageBuilder: (_, __, ___) => ActivityParticipantsPage(participants : tableParticipants)
+              pageBuilder: (_, __, ___) => ActivityParticipantsPage(participants : tableParticipants, documentId : documentId)
           )
         );
       }
@@ -267,7 +267,7 @@ class DescriptionPage extends StatelessWidget {
                       TextButton(
                         onPressed: () => {Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ListViewHomeLayout()),
+                            MaterialPageRoute(builder: (context) => const ListViewHomeLayout()),
                           )},
                         child: const Text('OK'),
                       ),

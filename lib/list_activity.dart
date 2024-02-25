@@ -10,6 +10,8 @@ import 'package:conjugo/search_widget.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 
 class ListViewHomeLayout extends StatefulWidget {
+  const ListViewHomeLayout({super.key});
+
   @override
   ListViewHome createState() => ListViewHome();
 }
@@ -92,9 +94,7 @@ class ListViewHome extends State<ListViewHomeLayout> {
           title: const Text("Liste des Activités"),
           centerTitle: true,
         ),
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: const Center(child: CircularProgressIndicator()),
       );
     } else {
       return Scaffold(

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class ActivityParticipantsPage extends StatefulWidget {
   List<dynamic> participants;
-  ActivityParticipantsPage({super.key, required this.participants});
+  String documentId;
+  ActivityParticipantsPage({super.key, required this.participants, required this.documentId});
 
   @override
   ActivityParticipantsPageState createState() => ActivityParticipantsPageState();
@@ -24,7 +25,6 @@ class ActivityParticipantsPageState extends State<ActivityParticipantsPage> {
   }
   
   Future<void> fetchParticipants() async {
-    print(widget.participants);
     if(widget.participants.isEmpty) {
       setState(() {userCredentials = [];});
       return;
@@ -50,11 +50,34 @@ class ActivityParticipantsPageState extends State<ActivityParticipantsPage> {
         itemCount: userCredentials.length,
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
-            title: Text((userCredentials[index]['prenom'] ?? '') + ' ' + (userCredentials[index]['nom'])),
+            title: Text((userCredentials[index]['prenom'] ?? '') + ' ' + (userCredentials[index]['nom'] ?? '')),
             subtitle: Text(userCredentials[index]['mail'] ?? ''),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => deleteParticipants(index),
+            ),
           );
         },
       ),
     );
+  }
+
+  Future<void> deleteParticipants(int index) async {
+    String userId = widget.participants[index];
+    var publicationCollection = FirebaseFirestore.instance.collection("ACTIVITYDATA");
+    final publication = publicationCollection.doc(widget.documentId);
+
+    publication.get().then( (DocumentSnapshot doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      List tableParticipants = data["participants"]; //on récupère la liste des participants
+      tableParticipants.remove(userId); // on supprime l'utilisateur selectionné
+      publication.update({"participants": tableParticipants}); //on met à jour le document
+
+      int remainingEntries = data["numberOfRemainingEntries"]; // on récupère le nombre de places restantes
+      publication.update({"numberOfRemainingEntries": remainingEntries + 1}); // on rajoute la place que l'utilisateur prenait
+
+      widget.participants.remove(userId); // on le retire également de la liste que associée à la page
+      fetchParticipants(); // on actualise la page
+    });
   }
 }

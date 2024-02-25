@@ -6,6 +6,8 @@ import 'package:conjugo/user_description.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 
 class UserListPage extends StatefulWidget {
+  const UserListPage({super.key});
+
   @override
   UserListHome createState() => UserListHome();
 }
@@ -69,9 +71,7 @@ class UserListHome extends State<UserListPage> {
           title: const Text("Liste des Utilisateurs"),
           centerTitle: true,
         ),
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: const Center(child: CircularProgressIndicator()),
       );
     } else {
       return Scaffold(

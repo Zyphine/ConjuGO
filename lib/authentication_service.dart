@@ -17,7 +17,6 @@ class AuthenticationService {
       User? user = result.user;
       return user;
     } catch (exception) {
-      print(exception.toString());
       return null;
     }
   }
@@ -25,12 +24,10 @@ class AuthenticationService {
   //Fonction permettant de s'inscrire (créer un user) avec un mail et un mdp
   Future registerWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
-      print(user.toString());
+      return user;
     } catch (exception) {
-      print(exception.toString());
       return null;
     }
   }
@@ -40,7 +37,6 @@ class AuthenticationService {
     try {
       return await _auth.signOut();
     } catch (exception) {
-      print(exception.toString());
       return null;
     }
   }
@@ -64,7 +60,6 @@ class AuthenticationService {
         dynamic isAdmin = snapshot.data()?['admin'];
         return isAdmin;
     } else {
-      print('Aucun utilisateur connecté.');
       return false;
     }
   }
