@@ -4,7 +4,6 @@ import 'package:conjugo/connection_page.dart';
 import 'package:conjugo/list_activity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 //Page description des activités
 class DescriptionPage extends StatelessWidget {
@@ -121,19 +120,48 @@ class DescriptionPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32.0),
-            ElevatedButton(
-              onPressed: () => registerParticipant(context),
-              style: ButtonStyle(
+            FutureBuilder<bool>(
+              future: isParticipating(), 
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(); // renvoi un container vide pendant l'attente
+                } else if (snapshot.hasError) {
+                  return Container(); // renvoi un container vide en cas d'erreur
+                } else {
+                  bool isParticipating = snapshot.data ?? false;
+
+                  // N'afficher le boutton s'inscrire que si l'utilisateur n'est pas inscrit
+                  return isParticipating? ElevatedButton(
+                      onPressed: () => unRegisterParticipant(context),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                        maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                        minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Désinscription '),
+                          Icon(Icons.highlight_off),
+                        ],
+                      ),
+                    )
+                  : ElevatedButton(
+                    onPressed: () => registerParticipant(context),
+                    style: ButtonStyle(
                       maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
                       minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
-              ),
-              child: const Row(
+                    ),
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text('Pré-inscription '),
                         Icon(Icons.how_to_reg),
                       ],
                     ),
+                  ); //renvoi un bouton de desincrtiption si l'utilisateur est deja inscrit
+                }
+              },
             ),
             FutureBuilder<bool>(
               future: auth.isUserAdmin(), 
@@ -200,34 +228,72 @@ class DescriptionPage extends StatelessWidget {
     );
   }
 
+  Future<void> unRegisterParticipant(BuildContext context) async {
+    bool result = await isParticipating();
+
+    if(result) {
+      final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+      publication.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          List tableParticipants = data["participants"]; //on récupère la liste des participants
+          tableParticipants.remove(FirebaseAuth.instance.currentUser?.uid); //on supprime l'utilisateur actuellement connecté
+          publication.update({"participants": tableParticipants}); //on met à jour le document
+          publication.update({"numberOfRemainingEntries": numberOfRemainingEntries + 1}).then( //on enlève une place
+            (value) => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text("Désinscription réussie"),
+                content: const Text("Vous êtes désinscrit avec succès \npensez à prévenir l'organisateur si besoin"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => {Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ListViewHomeLayout()),
+                      )},
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            )
+          );
+        }
+      );
+    }
+  }
+
   Future<void> registerParticipant(BuildContext context) async {
-    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
-    publication.get().then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        List tableParticipants = data["participants"]; //on récupère la liste des participants
-        tableParticipants.add(FirebaseAuth.instance.currentUser?.uid); //on ajoute l'utilisateur actuellement connecté
-        publication.update({"participants": tableParticipants}); //on met à jour le document
-        publication.update({"numberOfRemainingEntries": numberOfRemainingEntries-1}).then( //on enlève une place
-          (value) => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text("Pré-inscription réussie"),
-              content: const Text("Vous êtes pré-inscrit avec succès \npensez à vous inscrire auprès de l'organisateur"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => {Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ListViewHomeLayout()),
-                    )},
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          )
-        );
-      }
-    );
+    bool result = await isParticipating();
+
+    if(!result) {
+      final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+      publication.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          List tableParticipants = data["participants"]; //on récupère la liste des participants
+          tableParticipants.add(FirebaseAuth.instance.currentUser?.uid); //on ajoute l'utilisateur actuellement connecté
+          publication.update({"participants": tableParticipants}); //on met à jour le document
+          publication.update({"numberOfRemainingEntries": numberOfRemainingEntries-1}).then( //on enlève une place
+            (value) => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text("Pré-inscription réussie"),
+                content: const Text("Vous êtes pré-inscrit avec succès \npensez à vous inscrire auprès de l'organisateur"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => {Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ListViewHomeLayout()),
+                      )},
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            )
+          );
+        }
+      );
+    }
   }
 
   Future<void> toParticipantsList(BuildContext context) async {
@@ -294,23 +360,15 @@ class DescriptionPage extends StatelessWidget {
     if (user != null) {
       userId = user.uid;
     } else {
-      return true;
+      return false;
     }
 
-    bool result = true;
     final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
-    publication.get().then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        List tableParticipants = data["participants"]; //on récupère la liste des participants
-        for (int i = 0; i < tableParticipants.length; i++) {
-          if (tableParticipants[i]==userId) {
-            result = true;
-          } 
-        }
-      }
-    );
+    final DocumentSnapshot doc = await publication.get();
+    final data = doc.data() as Map<String, dynamic>;
+    List<dynamic> tableParticipants = data["participants"] ?? [];
 
-    return result;
+    return tableParticipants.contains(userId);
   }
+
 }

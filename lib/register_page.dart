@@ -152,7 +152,7 @@ bool passwordContainLetterAndNumber(String password) {
                           showAlertDialog(context);
                         }
                       });
-
+                      await FirebaseAuth.instance.signOut();
                   } else {
                     //Pop up erreur mdp et on nettoie les 2 mdp
                     showAlertDialogMdp(context);

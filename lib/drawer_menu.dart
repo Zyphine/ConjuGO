@@ -1,9 +1,11 @@
 import 'package:conjugo/authentication_service.dart';
 import 'package:conjugo/activity_map.dart';
 import 'package:conjugo/dashboard.dart';
+import 'package:conjugo/main.dart';
 import 'package:conjugo/my_activities.dart';
 import 'package:conjugo/settings.dart';
 import 'package:conjugo/about.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:conjugo/list_activity.dart';
 
@@ -124,68 +126,71 @@ class DrawerMenu extends Drawer {
             ),
           ),
           Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              //Vers la page d'accueil
-              child: GestureDetector(
-                onTap: () {
-                  //Suppresion de l'historique et renvoie sur le chemin '/', la page d'accueil
-                  //Cela permet d'éviter des erreurs où on rouvre une page encore ouverte en arrière plan
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/', (Route<dynamic> route) => false);
-                },
-                child: const Card(
-                    color: Color.fromARGB(255, 88, 180, 255),
-                    child: ListTile(
-                        leading: Icon(Icons.logout_outlined,
+            padding: const EdgeInsets.only(bottom: 20),
+            //Vers la page d'accueil
+            child: GestureDetector(
+              onTap: () async {
+                Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+              await FirebaseAuth.instance.signOut();
+              
+            },
+              child: const Card(
+                color: Color.fromARGB(255, 88, 180, 255),
+                child: ListTile(
+                  leading: Icon(Icons.logout_outlined,
+                    color: Colors.white, size: 40),
+                  title: Text('Se déconnecter',
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.white,
+                      decoration: TextDecoration.underline)))),
+          )),
+              //Vers la dashbord
+
+          FutureBuilder<bool>(
+            future: auth.isUserAdmin(), 
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(); // renvoi un container vide pendant l'attente
+              } else if (snapshot.hasError) {
+                return Container(); // renvoi un container vide en cas d'erreur
+              } else {
+                bool isAdmin = snapshot.data ?? false;
+
+                // N'afficher le boutton vers le tableau de bord que si l'utilisateur est admin
+                return isAdmin? Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => const DashboardPage()
+                        )
+                      );
+                    },
+                    child: const Card(
+                      color: Color.fromARGB(255, 88, 180, 255),
+                      child: ListTile(
+                        leading: Icon(Icons.admin_panel_settings,
                             color: Colors.white, size: 40),
-                        title: Text('Se déconnecter',
+                        title: Text('Tableau de bord',
                             style: TextStyle(
                                 fontSize: 25,
                                 color: Colors.white,
-                                decoration: TextDecoration.underline)))),
-              )),
-              //Vers la dashbord
-
-              FutureBuilder<bool>(
-                future: auth.isUserAdmin(), 
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Container(); // renvoi un container vide pendant l'attente
-                  } else if (snapshot.hasError) {
-                    return Container(); // renvoi un container vide en cas d'erreur
-                  } else {
-                    bool isAdmin = snapshot.data ?? false;
-
-                    // N'afficher le boutton vers le tableau de bord que si l'utilisateur est admin
-                    return isAdmin? Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                                pageBuilder: (_, __, ___) => const DashboardPage()
-                            )
-                          );
-                        },
-                        child: const Card(
-                          color: Color.fromARGB(255, 88, 180, 255),
-                          child: ListTile(
-                            leading: Icon(Icons.admin_panel_settings,
-                                color: Colors.white, size: 40),
-                            title: Text('Tableau de bord',
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    decoration: TextDecoration.underline)),
-                          ),
-                        ),
+                                decoration: TextDecoration.underline)),
                       ),
-                    )
-                    : Container(); //renvoi un container vide si l'utilisateur n'est pas administrateur
-                  }
-                },
-              ),
+                    ),
+                  ),
+                )
+                : Container(); //renvoi un container vide si l'utilisateur n'est pas administrateur
+              }
+            },
+          ),
+          
           Padding(
             padding: const EdgeInsets.only(bottom: 40),
             //A propos
