@@ -129,13 +129,11 @@ class DrawerMenu extends Drawer {
             padding: const EdgeInsets.only(bottom: 20),
             //Vers la page d'accueil
             child: GestureDetector(
-              onTap: () async {
+              onTap: () {
                 Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
                 );
-              await FirebaseAuth.instance.signOut();
-              
             },
               child: const Card(
                 color: Color.fromARGB(255, 88, 180, 255),
