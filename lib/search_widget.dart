@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:conjugo/list_activity.dart';
+
 
 class SearchWidget extends StatefulWidget{
   final String text;
