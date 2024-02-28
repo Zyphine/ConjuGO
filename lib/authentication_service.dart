@@ -10,25 +10,23 @@ class AuthenticationService {
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
   //Fonction permettant de se connecter avec un mail et un mdp
-  Future signInWithEmailAndPassword(String email, String password) async {
-    try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      User? user = result.user;
-      return user;
-    } catch (exception) {
-      return null;
-    }
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+  try {
+    UserCredential result = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
+    return result.user;
+  } catch (exception) {
+    rethrow; 
   }
+}
 
   //Fonction permettant de s'inscrire (créer un user) avec un mail et un mdp
-  Future registerWithEmailAndPassword(String email, String password) async {
+  Future<User?> registerWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      User? user = result.user;
-      return user;
+      return result.user;
     } catch (exception) {
-      return null;
+      rethrow; 
     }
   }
 

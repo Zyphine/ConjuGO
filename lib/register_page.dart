@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-
 import 'package:conjugo/authentication_service.dart';
 
 // Création instance pour communiquer avec la base + partie authentification
@@ -25,15 +24,26 @@ class RegisterPageState extends State<RegisterPage> {
   TextEditingController surnameController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
-// Création fonction qui vérifie si le mot de passe contient au moins 1 lettre et 1 chiffre
-bool passwordContainLetterAndNumber(String password) {
-  // Vérifier la présence d'au moins une lettre
-  bool hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
-  // Vérifier la présence d'au moins un chiffre
-  bool hasNumber = password.contains(RegExp(r'[1234567890]'));
-  // Retourner true si le mot de passe respecte les critères, sinon false
-  return hasLetter && hasNumber;
-}
+  // Création fonction qui vérifie si le mot de passe contient au moins 1 lettre et 1 chiffre
+  bool passwordContainLetterAndNumber(String password) {
+    // Vérifier la présence d'au moins une lettre
+    bool hasLetter = password.contains(RegExp(r'[a-zA-Z]'));
+    // Vérifier la présence d'au moins un chiffre
+    bool hasNumber = password.contains(RegExp(r'[1234567890]'));
+    // Retourner true si le mot de passe respecte les critères, sinon false
+    return hasLetter && hasNumber;
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    passwordController2.dispose();
+    nameController.dispose();
+    surnameController.dispose();
+    dateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +70,14 @@ bool passwordContainLetterAndNumber(String password) {
               TextFormField(
                   controller: surnameController,
                   decoration: const InputDecoration(labelText: " Prénom")),
-              TextField(
+              TextFormField(
                   controller: dateController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez sélectionner une date';
+                    }
+                    return null;
+                  },
                   decoration: const InputDecoration(
                       icon: Icon(Icons.calendar_today),
                       labelText: "Date de Naissance"),
@@ -83,7 +99,6 @@ bool passwordContainLetterAndNumber(String password) {
                   }),
               const SizedBox(height: 20),
               TextFormField(
-                
                   //Mail
                   controller: emailController,
                   toolbarOptions: const ToolbarOptions(
@@ -153,7 +168,6 @@ bool passwordContainLetterAndNumber(String password) {
                           showAlertDialog(context);
                         }
                       });
-                      await FirebaseAuth.instance.signOut();
                   } else {
                     //Pop up erreur mdp et on nettoie les 2 mdp
                     showAlertDialogMdp(context);
