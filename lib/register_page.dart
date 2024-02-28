@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:conjugo/list_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +26,9 @@ class RegisterPageState extends State<RegisterPage> {
   TextEditingController surnameController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
+  bool obscureText1 = true;
+  bool obscureText2 = true;
+
   // Création fonction qui vérifie si le mot de passe contient au moins 1 lettre et 1 chiffre
   bool passwordContainLetterAndNumber(String password) {
     // Vérifier la présence d'au moins une lettre
@@ -34,6 +39,31 @@ class RegisterPageState extends State<RegisterPage> {
     return hasLetter && hasNumber;
   }
 
+  StreamSubscription<User?>? authListener;
+
+  @override
+  void initState() {
+    super.initState();
+    authListener = FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      //On regarde si un user est donc connecté, si oui, on prend son id
+        if (user != null) {
+          String userUid = auth.getUser();
+          //Insertion des infos user dans la base firestore
+          db.collection("USERDATA").doc(userUid).set({
+            "userId" : userUid,
+            "nom": nameController.text,
+            "prenom": surnameController.text,
+            "dateDeNaissance": dateController.text,
+            "admin": false,
+            "superAdmin": false,
+            "mail": emailController.text
+          });
+          //Redirection vers page accueil activités
+          showConfirmDialog(context);
+        }
+    });
+  }
+
   @override
   void dispose() {
     emailController.dispose();
@@ -42,6 +72,7 @@ class RegisterPageState extends State<RegisterPage> {
     nameController.dispose();
     surnameController.dispose();
     dateController.dispose();
+    authListener?.cancel();
     super.dispose();
   }
 
@@ -113,7 +144,7 @@ class RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 20),
               TextFormField(
                   // MDP
-                  obscureText: true,
+                  obscureText: obscureText1,
                   controller: passwordController,
                   toolbarOptions: const ToolbarOptions(
                     copy: false,
@@ -121,22 +152,41 @@ class RegisterPageState extends State<RegisterPage> {
                     paste: false,
                     selectAll: false,
                   ),
-                  decoration: const InputDecoration(
-                      labelText: " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)")),
+                  decoration: InputDecoration(
+                    labelText: " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)",
+                    suffixIcon: IconButton(
+                      icon: Icon(obscureText1 ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          obscureText1 = !obscureText1;
+                        });
+                      },
+                    ),
+                  )
+              ),
               const SizedBox(height: 20),
               TextFormField(
-                  //MDP 2
-                  obscureText: true,
-                  controller: passwordController2,
-                  toolbarOptions: const ToolbarOptions(
-                    copy: false,
-                    cut: false,
-                    paste: false,
-                    selectAll: false,
+                //MDP 2
+                obscureText: obscureText2,
+                controller: passwordController2,
+                toolbarOptions: const ToolbarOptions(
+                  copy: false,
+                  cut: false,
+                  paste: false,
+                  selectAll: false,
+                ),
+                decoration: InputDecoration(
+                  labelText: " Rentrez votre mot de passe une seconde fois",
+                  suffixIcon: IconButton(
+                    icon: Icon(obscureText2 ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        obscureText2 = !obscureText2;
+                      });
+                    },
                   ),
-                  decoration: const InputDecoration(
-                      labelText:
-                          " Rentrez votre mot de passe une seconde fois")),
+                )
+              ),
             ])),
             ElevatedButton(
                 //Bouton inscription
@@ -149,30 +199,32 @@ class RegisterPageState extends State<RegisterPage> {
                       passwordContainLetterAndNumber(passwordController.text) == true) {
                     //Vérifications que le mail a bien été rentré correctement 2 fois
                       //Inscription
-                      auth.registerWithEmailAndPassword(emailController.text, passwordController.text);
-                      FirebaseAuth.instance.authStateChanges().listen((User? user) {
-                        //On regarde si un user est donc connecté, si oui, on prend son id
-                        if (user != null) {
-                          String userUid = auth.getUser();
-                          //Insertion des infos user dans la base firestore
-                          db.collection("USERDATA").doc(userUid).set({
-                            "userId" : userUid,
-                            "nom": nameController.text,
-                            "prenom": surnameController.text,
-                            "dateDeNaissance": dateController.text,
-                            "admin": false,
-                            "superAdmin": false,
-                            "mail": emailController.text
-                          });
-                          //Redirection vers page accueil activités
-                          showAlertDialog(context);
+                      try {
+                        await auth.registerWithEmailAndPassword(emailController.text, passwordController.text);
+                        // Connecte l'utilisateur après l'inscription
+                        await auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
+                      } catch (exception) {
+                        if (context.mounted) {
+                          print("l'exception renvoyée est : $exception");
+                          if (exception.toString()=="email-already-in-use") {
+                            showErrorDialog(context, "Un compte avec la même adresse email existe déjà");
+                            emailController.clear();
+                          } else if (exception.toString()=="invalid-email") {
+                            showErrorDialog(context, "format d'email invalide");
+                            emailController.clear();
+                          } else if (exception.toString()=="operation-not-allowed") {
+                            showErrorDialog(context, "Opération invalide");
+                          } else if (exception.toString()=="weak-password") {
+                            showErrorDialog(context, "Mot de passe trop faible");
+                          }
                         }
-                      });
+                        print("\n\n\n");
+                        passwordController.clear();
+                        passwordController2.clear();
+                      }
                   } else {
                     //Pop up erreur mdp et on nettoie les 2 mdp
-                    showAlertDialogMdp(context);
-                    passwordController.clear();
-                    passwordController2.clear();
+                    showErrorDialog(context, "Mot de passe trop faible");
                   }
                 })
           ]),
@@ -182,15 +234,19 @@ class RegisterPageState extends State<RegisterPage> {
   }
 
 //ALERTES
-  showAlertDialog(BuildContext context) {
+  showConfirmDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
       child: const Text("OK"),
       onPressed: () {
         Navigator.of(context).pop();
         if (mounted) {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ListViewHomeLayout(),
+              ),
+              (Route<dynamic> route) => false);
         }
       },
     );
@@ -215,7 +271,7 @@ class RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  showAlertDialogMail(BuildContext context) {
+  showErrorDialog(BuildContext context, String errorText) {
     // set up the button
     Widget okButton = TextButton(
       child: const Text("OK"),
@@ -225,7 +281,7 @@ class RegisterPageState extends State<RegisterPage> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: const Text("Erreur"),
-      content: const Text("Mails non identiques"),
+      content: Text(errorText),
       actions: [
         okButton,
       ],

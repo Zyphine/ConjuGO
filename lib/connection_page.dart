@@ -97,7 +97,6 @@ class ConnectionPageState extends State<ConnectionPage> {
       onPressed: () {
         Navigator.of(context).pop();
         if (mounted) {
-          //Le if(mounted) permet de résoudre une erreur qui arrivait quand on voulait réafficher les pop up alors qu'elles ont déjà été fermé, enfin j'ai pas tout compris le pb mais mounted est la solution
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
