@@ -71,7 +71,8 @@ bool passwordContainLetterAndNumber(String password) {
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime(1920),
-                        lastDate: DateTime(2025));
+                        lastDate: DateTime(2025),
+                        locale : const Locale('fr'));
                     //On transforme la date au format souhaité
                     if (pickedDate != null) {
                       String formattedDate =

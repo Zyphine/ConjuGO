@@ -26,7 +26,7 @@ class DrawerMenu extends Drawer {
             child : DrawerHeader(
                 padding: const EdgeInsets.only(top: 10),
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 122, 190, 246),
+                  color: Colors.blue,
                 ),
                 child: Column(children: <Widget>[
                   const Expanded(flex: 2,child : Text(
@@ -50,15 +50,14 @@ class DrawerMenu extends Drawer {
                           pageBuilder: (_, __, ___) => const ListViewHomeLayout()));
                 },
                 child: const Card(
-                    color: Color.fromARGB(255, 88, 180, 255),
+                    color: Colors.blue,
                     child: ListTile(
                       leading: Icon(Icons.manage_search,
                           color: Colors.white, size: 40),
-                      title: Text('Liste activités',
+                      title: Text('Rechercher des activités',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.white,
-                              decoration: TextDecoration.underline)),
+                              color: Colors.white,)),
                     ))),
           ),
           Padding(
@@ -72,20 +71,19 @@ class DrawerMenu extends Drawer {
                           pageBuilder: (_, __, ___) => const MyActivities()));
                 },
                 child: const Card(
-                    color: Color.fromARGB(255, 88, 180, 255),
+                    color: Colors.blue,
                     child: ListTile(
-                      leading: Icon(Icons.favorite,
+                      leading: Icon(Icons.event_available,
                           color: Colors.white, size: 40),
                       title: Text('Mes activités',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.white,
-                              decoration: TextDecoration.underline)),
+                              color: Colors.white,)),
                     ))),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            //Vers la carte
+            //Vers les favoris
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -94,14 +92,13 @@ class DrawerMenu extends Drawer {
                         pageBuilder: (_, __, ___) => const ActivityMap()));
               },
               child: const Card(
-                  color: Color.fromARGB(255, 88, 180, 255),
+                  color: Colors.blue,
                   child: ListTile(
-                    leading: Icon(Icons.map, color: Colors.white, size: 40),
-                    title: Text('Carte',
+                    leading: Icon(Icons.favorite, color: Colors.white, size: 40),
+                    title: Text('Favoris',
                         style: TextStyle(
                             fontSize: 25,
-                            color: Colors.white,
-                            decoration: TextDecoration.underline)
+                            color: Colors.white,)
                     ),
                   )
               ),
@@ -116,15 +113,14 @@ class DrawerMenu extends Drawer {
                     PageRouteBuilder(pageBuilder: (_, __, ___) => const Settings()));
               },
               child: const Card(
-                  color: Color.fromARGB(255, 88, 180, 255),
+                  color: Colors.blue,
                   child: ListTile(
                       leading:
                           Icon(Icons.settings, color: Colors.white, size: 40),
                       title: Text('Paramètres',
                           style: TextStyle(
                               fontSize: 25,
-                              color: Colors.white,
-                              decoration: TextDecoration.underline)
+                              color: Colors.white,)
                       )
                   )
               ),
@@ -142,15 +138,14 @@ class DrawerMenu extends Drawer {
             },
 
               child: const Card(
-                color: Color.fromARGB(255, 88, 180, 255),
+                color: Colors.blue,
                 child: ListTile(
                   leading: Icon(Icons.logout_outlined,
                     color: Colors.white, size: 40),
                   title: Text('Se déconnecter',
                     style: TextStyle(
                       fontSize: 25,
-                      color: Colors.white,
-                      decoration: TextDecoration.underline)))),
+                      color: Colors.white,)))),
           )),
               //Vers la dashbord
 
@@ -177,15 +172,14 @@ class DrawerMenu extends Drawer {
                       );
                     },
                     child: const Card(
-                      color: Color.fromARGB(255, 88, 180, 255),
+                      color: Colors.blue,
                       child: ListTile(
                         leading: Icon(Icons.admin_panel_settings,
                             color: Colors.white, size: 40),
                         title: Text('Tableau de bord',
                             style: TextStyle(
                                 fontSize: 25,
-                                color: Colors.white,
-                                decoration: TextDecoration.underline)),
+                                color: Colors.white,)),
                       ),
                     ),
                   ),
