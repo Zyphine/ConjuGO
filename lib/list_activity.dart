@@ -61,7 +61,7 @@ class Activity {
     if (date2 != null) {
       initializeDateFormatting();
 
-      dateStr = DateFormat.yMMMMEEEEd('fr').format(date2) + ' à ' + DateFormat.Hm('fr').format(date2);
+      dateStr = '${DateFormat.yMMMMEEEEd('fr').format(date2)} à ${DateFormat.Hm('fr').format(date2)}';
     } else {
       return date2.toString();
     }

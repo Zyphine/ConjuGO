@@ -20,6 +20,8 @@ class ConnectionPageState extends State<ConnectionPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  bool obscureText1 = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,11 +45,20 @@ class ConnectionPageState extends State<ConnectionPage> {
             //MDP
             const SizedBox(height: 20),
             TextFormField(
-              obscureText: true,
+              obscureText: obscureText1,
               controller: passwordController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                   labelText:
-                      " Veuillez rentrer votre mot de passe au format JJMMAAAA"),
+                      " Veuillez rentrer votre mot de passe",
+                  suffixIcon: IconButton(
+                    icon: Icon(obscureText1 ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        obscureText1 = !obscureText1;
+                      });
+                    },
+                  ),
+                )
             ),
           ])),
           ElevatedButton(
@@ -55,32 +66,21 @@ class ConnectionPageState extends State<ConnectionPage> {
               child: const Text("Se connecter"),
               onPressed: () async {
                 try {
-                  await auth.signInWithEmailAndPassword(
-                      emailController.text, passwordController.text);
-                  //On utilise un bool pour qu'on ne se connecte qu'une seule fois
-                  //bool isConnected = false;
-                  //if (!isConnected) {
-                    //On vérifie si un utilisateur est connecté (se lance en future)
-                    FirebaseAuth.instance
-                        .authStateChanges()
-                        .listen((User? user) {
-                      if (user == null) {
-                        showAlertDialogError(context);
-                        emailController.clear();
-                        passwordController.clear();
-                        
-                        //isConnected = true;
-                      }
-
-                      else{
-                      showAlertDialog(context);
-                        
-                      }
-                      
-                    });
-                }
-                catch (e){
+                  await auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
+                  if (context.mounted) {
+                    showConfirmDialog(context);
+                  }
+                } catch (e) {
                   print("Erreur lors de la connexion : $e");
+                  if (context.mounted) {
+                    if (e.toString()=="[firebase_auth/wrong-password] The password is invalid or the user does not have a password.") {
+                      showErrorDialog(context, "Mot de passe incorrect.");
+                      passwordController.clear();
+                    } else if (e.toString()=="[firebase_auth/too-many-requests] We have blocked all requests from this device due to unusual activity. Try again later.") {
+                      showErrorDialog(context, "Votre compte est temporairement blocké \n suite à plusieurs tentative de connexion échoué");
+                      passwordController.clear();
+                    }
+                  }
                 }        
               }
             )
@@ -90,7 +90,7 @@ class ConnectionPageState extends State<ConnectionPage> {
   }
 
   //Pop up 'ok'
-  showAlertDialog(BuildContext context) {
+  showConfirmDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
       child: const Text("OK"),
@@ -119,7 +119,6 @@ class ConnectionPageState extends State<ConnectionPage> {
 
     // show the dialog
     if (mounted) {
-      //Même explication qu'au dessus pour le mounted
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -129,8 +128,7 @@ class ConnectionPageState extends State<ConnectionPage> {
     }
   }
 
-  //Pop up d'erreur
-  showAlertDialogError(BuildContext context) {
+  showErrorDialog(BuildContext context, String errorText) {
     // set up the button
     Widget okButton = TextButton(
       child: const Text("OK"),
@@ -140,18 +138,20 @@ class ConnectionPageState extends State<ConnectionPage> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: const Text("Erreur"),
-      content: const Text("Mail ou mot de passe invalide. Veuillez réessayer."),
+      content: Text(errorText),
       actions: [
         okButton,
       ],
     );
 
     // show the dialog
+    if (mounted) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return alert;
         },
       );
+    }
   }
 }

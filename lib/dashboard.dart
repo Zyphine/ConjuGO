@@ -32,6 +32,10 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+              ),
               onPressed: () {
                 Navigator.push(context,
                       PageRouteBuilder(pageBuilder: (_, __, ___) => const PublishArticlePage()));
@@ -40,6 +44,10 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+              ),
               onPressed: () {
                 Navigator.push(context,
                       PageRouteBuilder(pageBuilder: (_, __, ___) =>  const ListViewHomeLayout()));
@@ -48,6 +56,10 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+              ),
               onPressed: () {
                 Navigator.push(context,
                       PageRouteBuilder(pageBuilder: (_, __, ___) =>  const UserListPage()));

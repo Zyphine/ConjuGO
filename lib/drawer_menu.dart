@@ -1,11 +1,9 @@
 import 'package:conjugo/authentication_service.dart';
 import 'package:conjugo/activity_map.dart';
 import 'package:conjugo/dashboard.dart';
-import 'package:conjugo/main.dart';
 import 'package:conjugo/my_activities.dart';
 import 'package:conjugo/settings.dart';
 import 'package:conjugo/about.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:conjugo/list_activity.dart';
 
@@ -130,12 +128,13 @@ class DrawerMenu extends Drawer {
             padding: const EdgeInsets.only(bottom: 20),
             //Vers la page d'accueil
             child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-            },
+              onTap: () async {
+                await auth.signOut();
+                // Supprime l'historique des page après deconnexion et renvoi vers la page d'accueil
+                if (context.mounted) {
+                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                }
+              },
 
               child: const Card(
                 color: Colors.blue,

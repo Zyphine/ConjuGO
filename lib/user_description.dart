@@ -30,7 +30,7 @@ class UserDescriptionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(nom + " " + prenom),
+        title: Text("$nom $prenom"),
       ),
       body: Center(
         child: Column(

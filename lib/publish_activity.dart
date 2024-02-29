@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class PublishArticlePage extends StatefulWidget {
-  const PublishArticlePage({Key? key}) : super(key: key);
+  const PublishArticlePage({super.key});
 
   @override
   _PublishArticlePageState createState() => _PublishArticlePageState();

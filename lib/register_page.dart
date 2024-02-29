@@ -146,12 +146,13 @@ class RegisterPageState extends State<RegisterPage> {
                   // MDP
                   obscureText: obscureText1,
                   controller: passwordController,
-                  toolbarOptions: const ToolbarOptions(
+                  contextMenuBuilder: null,
+                  /*toolbarOptions: const ToolbarOptions(
                     copy: false,
                     cut: false,
                     paste: false,
                     selectAll: false,
-                  ),
+                  ),*/
                   decoration: InputDecoration(
                     labelText: " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)",
                     suffixIcon: IconButton(
