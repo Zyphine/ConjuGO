@@ -132,13 +132,20 @@ class RegisterPageState extends State<RegisterPage> {
               TextFormField(
                   //Mail
                   controller: emailController,
-                  toolbarOptions: const ToolbarOptions(
+                  /*toolbarOptions: const ToolbarOptions(
                     //Rendre possible les copier-coller
                     copy: true,
                     cut: true,
                     paste: true, //Peut-être pas besoin car déjà "true" de base
                     selectAll: true,
-                  ),
+                  ),*/
+                  contextMenuBuilder: (context, editableTextState) {
+                    final List<ContextMenuButtonItem> buttonItems = editableTextState.contextMenuButtonItems;
+                    return AdaptiveTextSelectionToolbar.buttonItems(
+                      anchors: editableTextState.contextMenuAnchors,
+                      buttonItems: buttonItems,
+                    );
+                  },
                   decoration: const InputDecoration(labelText: " Mail")),
              
               const SizedBox(height: 20),
@@ -147,12 +154,6 @@ class RegisterPageState extends State<RegisterPage> {
                   obscureText: obscureText1,
                   controller: passwordController,
                   contextMenuBuilder: null,
-                  /*toolbarOptions: const ToolbarOptions(
-                    copy: false,
-                    cut: false,
-                    paste: false,
-                    selectAll: false,
-                  ),*/
                   decoration: InputDecoration(
                     labelText: " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)",
                     suffixIcon: IconButton(
@@ -170,12 +171,7 @@ class RegisterPageState extends State<RegisterPage> {
                 //MDP 2
                 obscureText: obscureText2,
                 controller: passwordController2,
-                toolbarOptions: const ToolbarOptions(
-                  copy: false,
-                  cut: false,
-                  paste: false,
-                  selectAll: false,
-                ),
+                contextMenuBuilder: null,
                 decoration: InputDecoration(
                   labelText: " Rentrez votre mot de passe une seconde fois",
                   suffixIcon: IconButton(
@@ -206,26 +202,21 @@ class RegisterPageState extends State<RegisterPage> {
                         await auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
                       } catch (exception) {
                         if (context.mounted) {
-                          print("l'exception renvoyée est : $exception");
-                          if (exception.toString()=="email-already-in-use") {
+                          if (exception.toString()=="[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
                             showErrorDialog(context, "Un compte avec la même adresse email existe déjà");
                             emailController.clear();
-                          } else if (exception.toString()=="invalid-email") {
+                          } else if (exception.toString()=="[firebase_auth/invalid-email] The email address is badly formatted.") {
                             showErrorDialog(context, "format d'email invalide");
                             emailController.clear();
-                          } else if (exception.toString()=="operation-not-allowed") {
-                            showErrorDialog(context, "Opération invalide");
-                          } else if (exception.toString()=="weak-password") {
-                            showErrorDialog(context, "Mot de passe trop faible");
                           }
                         }
-                        print("\n\n\n");
                         passwordController.clear();
                         passwordController2.clear();
                       }
                   } else {
-                    //Pop up erreur mdp et on nettoie les 2 mdp
                     showErrorDialog(context, "Mot de passe trop faible");
+                    passwordController.clear();
+                    passwordController2.clear();
                   }
                 })
           ]),
@@ -236,119 +227,50 @@ class RegisterPageState extends State<RegisterPage> {
 
 //ALERTES
   showConfirmDialog(BuildContext context) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop();
-        if (mounted) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ListViewHomeLayout(),
-              ),
-              (Route<dynamic> route) => false);
-        }
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("Incriptions effectuée"),
-      content: const Text("Vous êtes inscrit, retour à la page d'accueil."),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
     if (mounted) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alert;
+          return AlertDialog(
+            title: const Text("Incriptions effectuée"),
+            content: const Text("Vous êtes inscrit, retour à la page d'accueil."),
+            actions: [
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  if (mounted) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ListViewHomeLayout(),
+                      ),
+                      (Route<dynamic> route) => false);
+                  }
+                },
+              ),
+            ],
+          );
         },
       );
     }
   }
 
   showErrorDialog(BuildContext context, String errorText) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () => Navigator.of(context).pop(),
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("Erreur"),
-      content: Text(errorText),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
     if (mounted) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-  }
-//Pas implémenté + Faire aussi si le mail est pas dans le format : il se passe rien pour l'instant car erreur firebase mais y a pas de pop
-  // showAlertDialogMailAlrdy(BuildContext context) {
-  //   // set up the button
-  //   Widget okButton = TextButton(
-  //     child: Text("OK"),
-  //     onPressed: () => Navigator.of(context).pop(),
-  //   );
-
-  //   // set up the AlertDialog
-  //   AlertDialog alert = AlertDialog(
-  //     title: Text("Erreur"),
-  //     content: Text("Mail déjà existant"),
-  //     actions: [
-  //       okButton,
-  //     ],
-  //   );
-
-  //   // show the dialog
-  //   if (mounted) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return alert;
-  //       },
-  //     );
-  //   }
-  // }
-
-  showAlertDialogMdp(BuildContext context) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("Erreur"),
-      content: const Text(
-          "Mots de passes différents ou au mauvais format"),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
+          return AlertDialog(
+            title: const Text("Erreur"),
+            content: Text(errorText),
+            actions: [
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
         },
       );
     }

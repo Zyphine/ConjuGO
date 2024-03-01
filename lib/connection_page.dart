@@ -1,7 +1,6 @@
 import 'package:conjugo/list_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:conjugo/authentication_service.dart';
 
 //Création des instances de dialogue avec la bdd (firestore) et d'authentification (auth)
@@ -71,7 +70,6 @@ class ConnectionPageState extends State<ConnectionPage> {
                     showConfirmDialog(context);
                   }
                 } catch (e) {
-                  print("Erreur lors de la connexion : $e");
                   if (context.mounted) {
                     if (e.toString()=="[firebase_auth/wrong-password] The password is invalid or the user does not have a password.") {
                       showErrorDialog(context, "Mot de passe incorrect.");

@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ActivityParticipantsPage extends StatefulWidget {
-  List<dynamic> participants;
-  String documentId;
-  ActivityParticipantsPage({super.key, required this.participants, required this.documentId});
+  final List<dynamic> participants;
+  final String documentId;
+  const ActivityParticipantsPage({super.key, required this.participants, required this.documentId});
 
   @override
   ActivityParticipantsPageState createState() => ActivityParticipantsPageState();

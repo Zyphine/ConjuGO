@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 
 //Page description des activités
 class DescriptionPage extends StatelessWidget {
-  String name;
-  String description;
-  String date;
-  String place;
-  int numberOfRemainingEntries;
-  String documentId;
-  int maxNumber;
+  final String name;
+  final String description;
+  final String date;
+  final String place;
+  final int numberOfRemainingEntries;
+  final String documentId;
+  final int maxNumber;
 
-  DescriptionPage(
+  const DescriptionPage(
       {super.key,
       //Définitions des éléments requis
       required this.name,

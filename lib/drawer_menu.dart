@@ -10,7 +10,7 @@ import 'package:conjugo/list_activity.dart';
 //Classe définissant le menu
 class DrawerMenu extends Drawer {
   
-  AuthenticationService auth = AuthenticationService();
+  final AuthenticationService auth = AuthenticationService();
 
   DrawerMenu({super.key});
 

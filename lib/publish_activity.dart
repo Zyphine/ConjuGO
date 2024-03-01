@@ -9,10 +9,10 @@ class PublishArticlePage extends StatefulWidget {
   const PublishArticlePage({super.key});
 
   @override
-  _PublishArticlePageState createState() => _PublishArticlePageState();
+  PublishArticlePageState createState() => PublishArticlePageState();
 }
 
-class _PublishArticlePageState extends State<PublishArticlePage> {
+class PublishArticlePageState extends State<PublishArticlePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();

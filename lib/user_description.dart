@@ -6,15 +6,15 @@ import 'package:conjugo/user_list.dart';
 
 //Page description des activités
 class UserDescriptionPage extends StatelessWidget {
-  String nom;
-  String prenom;
-  String dateDeNaissance;
-  String mail;
-  bool admin;
-  bool superAdmin;
-  String userId;
+  final String nom;
+  final String prenom;
+  final String dateDeNaissance;
+  final String mail;
+  final bool admin;
+  final bool superAdmin;
+  final String userId;
 
-  UserDescriptionPage(
+  const UserDescriptionPage(
       {super.key,
       //Définitions des éléments requis
       required this.nom,
