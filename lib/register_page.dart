@@ -3,6 +3,7 @@ import 'package:conjugo/list_activity.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:conjugo/authentication_service.dart';
 
@@ -25,6 +26,7 @@ class RegisterPageState extends State<RegisterPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   bool obscureText1 = true;
   bool obscureText2 = true;
@@ -56,7 +58,8 @@ class RegisterPageState extends State<RegisterPage> {
             "dateDeNaissance": dateController.text,
             "admin": false,
             "superAdmin": false,
-            "mail": emailController.text
+            "mail": emailController.text,
+            "phone" : phoneController.text,
           });
           //Redirection vers page accueil activités
           showConfirmDialog(context);
@@ -72,6 +75,7 @@ class RegisterPageState extends State<RegisterPage> {
     nameController.dispose();
     surnameController.dispose();
     dateController.dispose();
+    phoneController.dispose();
     authListener?.cancel();
     super.dispose();
   }
@@ -130,15 +134,23 @@ class RegisterPageState extends State<RegisterPage> {
                   }),
               const SizedBox(height: 20),
               TextFormField(
+                  //Téléphone
+                  controller: phoneController,
+                  contextMenuBuilder: (context, editableTextState) {
+                    final List<ContextMenuButtonItem> buttonItems = editableTextState.contextMenuButtonItems;
+                    return AdaptiveTextSelectionToolbar.buttonItems(
+                      anchors: editableTextState.contextMenuAnchors,
+                      buttonItems: buttonItems,
+                    );
+                  },
+                  decoration: const InputDecoration(labelText: "Numéro de téléphone"),
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
                   //Mail
                   controller: emailController,
-                  /*toolbarOptions: const ToolbarOptions(
-                    //Rendre possible les copier-coller
-                    copy: true,
-                    cut: true,
-                    paste: true, //Peut-être pas besoin car déjà "true" de base
-                    selectAll: true,
-                  ),*/
                   contextMenuBuilder: (context, editableTextState) {
                     final List<ContextMenuButtonItem> buttonItems = editableTextState.contextMenuButtonItems;
                     return AdaptiveTextSelectionToolbar.buttonItems(

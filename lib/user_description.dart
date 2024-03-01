@@ -13,6 +13,7 @@ class UserDescriptionPage extends StatelessWidget {
   final bool admin;
   final bool superAdmin;
   final String userId;
+  final String phone;
 
   const UserDescriptionPage(
       {super.key,
@@ -23,7 +24,8 @@ class UserDescriptionPage extends StatelessWidget {
       required this.mail,
       required this.admin,
       required this.superAdmin, 
-      required this.userId
+      required this.userId,
+      required this.phone,
       });
 
   @override
@@ -47,6 +49,20 @@ class UserDescriptionPage extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(mail),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Numéro de téléphone : ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(phone),
                 ],
               ),
             ),

@@ -5,8 +5,7 @@ import 'package:conjugo/list_activity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-//Page description des activités
-class DescriptionPage extends StatelessWidget {
+class DescriptionPage extends StatefulWidget {
   final String name;
   final String description;
   final String date;
@@ -16,20 +15,33 @@ class DescriptionPage extends StatelessWidget {
   final int maxNumber;
 
   const DescriptionPage(
-      {super.key,
-      //Définitions des éléments requis
-      required this.name,
-      required this.description,
-      required this.date,
-      required this.place,
-      required this.numberOfRemainingEntries,
-      required this.documentId,
-      required this.maxNumber});
+    {super.key,
+    //Définitions des éléments requis
+    required this.name,
+    required this.description,
+    required this.date,
+    required this.place,
+    required this.numberOfRemainingEntries,
+    required this.documentId,
+    required this.maxNumber});
+
+  @override
+  DescriptionPageState createState() => DescriptionPageState();
+
+}
+
+class DescriptionPageState extends State<DescriptionPage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(widget.name),
       ),
       body: Center(
         child: Column(
@@ -56,7 +68,7 @@ class DescriptionPage extends StatelessWidget {
                                 color: Colors.white),
                           ),
                           Text(
-                            description,
+                            widget.description,
                             style: const TextStyle(color: Colors.white),
                           ),
                         ],
@@ -87,7 +99,7 @@ class DescriptionPage extends StatelessWidget {
                     'Date :\n',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text(date),
+                  Text(widget.date),
                 ],
               ),
             ),
@@ -101,7 +113,7 @@ class DescriptionPage extends StatelessWidget {
                     'Lieu :\n',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text(place.toString()),
+                  Text(widget.place.toString()),
                 ],
               ),
             ),
@@ -115,7 +127,7 @@ class DescriptionPage extends StatelessWidget {
                     'Places restantes :\n',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Text(numberOfRemainingEntries.toString()),
+                  Text(widget.numberOfRemainingEntries.toString()),
                 ],
               ),
             ),
@@ -232,14 +244,14 @@ class DescriptionPage extends StatelessWidget {
     bool result = await isParticipating();
 
     if(result) {
-      final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+      final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(widget.documentId);
       publication.get().then(
         (DocumentSnapshot doc) {
           final data = doc.data() as Map<String, dynamic>;
           List tableParticipants = data["participants"]; //on récupère la liste des participants
           tableParticipants.remove(FirebaseAuth.instance.currentUser?.uid); //on supprime l'utilisateur actuellement connecté
           publication.update({"participants": tableParticipants}); //on met à jour le document
-          publication.update({"numberOfRemainingEntries": numberOfRemainingEntries + 1}).then( //on enlève une place
+          publication.update({"numberOfRemainingEntries": widget.numberOfRemainingEntries + 1}).then( //on enlève une place
             (value) => showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
@@ -266,14 +278,14 @@ class DescriptionPage extends StatelessWidget {
     bool result = await isParticipating();
 
     if(!result) {
-      final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+      final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(widget.documentId);
       publication.get().then(
         (DocumentSnapshot doc) {
           final data = doc.data() as Map<String, dynamic>;
           List tableParticipants = data["participants"]; //on récupère la liste des participants
           tableParticipants.add(FirebaseAuth.instance.currentUser?.uid); //on ajoute l'utilisateur actuellement connecté
           publication.update({"participants": tableParticipants}); //on met à jour le document
-          publication.update({"numberOfRemainingEntries": numberOfRemainingEntries-1}).then( //on enlève une place
+          publication.update({"numberOfRemainingEntries": widget.numberOfRemainingEntries-1}).then( //on enlève une place
             (value) => showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
@@ -297,7 +309,7 @@ class DescriptionPage extends StatelessWidget {
   }
 
   Future<void> toParticipantsList(BuildContext context) async {
-    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(widget.documentId);
     publication.get().then(
       (DocumentSnapshot doc) {
         final data = doc.data() as Map<String, dynamic>;
@@ -305,7 +317,7 @@ class DescriptionPage extends StatelessWidget {
         Navigator.push(
           context,
           PageRouteBuilder(
-              pageBuilder: (_, __, ___) => ActivityParticipantsPage(participants : tableParticipants, documentId : documentId)
+              pageBuilder: (_, __, ___) => ActivityParticipantsPage(participants : tableParticipants, documentId : widget.documentId)
           )
         );
       }
@@ -314,7 +326,7 @@ class DescriptionPage extends StatelessWidget {
 
   Future<void> deletePublication(BuildContext context) async {
 
-    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(widget.documentId);
 
     showDialog<String>(
       context: context,
@@ -363,7 +375,7 @@ class DescriptionPage extends StatelessWidget {
       return false;
     }
 
-    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(documentId);
+    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(widget.documentId);
     final DocumentSnapshot doc = await publication.get();
     final data = doc.data() as Map<String, dynamic>;
     List<dynamic> tableParticipants = data["participants"] ?? [];

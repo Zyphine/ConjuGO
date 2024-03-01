@@ -51,7 +51,7 @@ class ActivityParticipantsPageState extends State<ActivityParticipantsPage> {
         itemBuilder: (BuildContext context, int index) {
           return ListTile(
             title: Text((userCredentials[index]['prenom'] ?? '') + ' ' + (userCredentials[index]['nom'] ?? '')),
-            subtitle: Text(userCredentials[index]['mail'] ?? ''),
+            subtitle: Text((userCredentials[index]['mail'] ?? '') + '\n' + (userCredentials[index]['phone'] ?? '')),
             trailing: IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () => deleteParticipants(index),

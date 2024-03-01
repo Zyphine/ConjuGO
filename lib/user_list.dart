@@ -21,6 +21,7 @@ class Personne {
   bool? superAdmin = false;
   String? mail = "";
   String? userId = "";
+  String? phone = "";
 
   Personne({
     this.nom,
@@ -30,6 +31,7 @@ class Personne {
     this.superAdmin,
     this.mail,
     this.userId,
+    this.phone,
   });
 
   factory Personne.fromFirestore(
@@ -45,7 +47,8 @@ class Personne {
       dateDeNaissance: data?['dateDeNaissance'],
       superAdmin: data?['superAdmin'],
       mail: data?['mail'],
-      userId: data?['userId']
+      userId: data?['userId'],
+      phone: data?['phone'],
     );
   }
 
@@ -56,6 +59,7 @@ class Personne {
   String getSuperAdmin() => superAdmin.toString();
   String getMail() => mail.toString();
   String getUserId() => userId.toString();
+  String getPhone() => phone.toString();
 }
 
 class UserListHome extends State<UserListPage> {
@@ -108,15 +112,14 @@ class UserListHome extends State<UserListPage> {
                               admin: bool.parse(personne.getAdmin()),
                               superAdmin: bool.parse(personne.getSuperAdmin()),
                               userId: personne.getUserId(),
+                              phone: personne.getPhone(),
                             ),
                           ),
                         );
                       },
                       title: Text("${personne.getNom()} ${personne.getPrenom()}"),
-                      subtitle: Text(personne.getMail()),
+                      subtitle: Text("${personne.getMail()} \n ${personne.getPhone()}"),
                       leading: const Icon(Icons.account_circle),
-                        
-                      
                     ),
                   );
                 },
