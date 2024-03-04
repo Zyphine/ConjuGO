@@ -17,6 +17,28 @@ class PublishArticlePageState extends State<PublishArticlePage> {
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _limitDateController = TextEditingController();
+  String? _selectedType;
+
+  Future<List<String>> fetchDataFromFirestore() async {
+    List<String> types = [];
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('ACTIVITYGENRE').get();
+      for (var doc in querySnapshot.docs) {
+        types.add(doc['nom']);
+      }
+      types.sort();
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+    return types;
+  }
+
+  // Méthode appelée lorsque la valeur de la DropdownButton est changée
+  void onChanged(String? value) {
+    setState(() {
+      _selectedType = value;
+    });
+  }
 
 
   @override
@@ -137,6 +159,30 @@ class PublishArticlePageState extends State<PublishArticlePage> {
                 }
               ),
               const SizedBox(height: 10),
+              FutureBuilder<List<String>>(
+                future: fetchDataFromFirestore(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    List<String> items = snapshot.data ?? [];
+                    return DropdownButton<String>(
+                      value: _selectedType,
+                      items: items.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: onChanged,
+                      hint: const Text("Type d'activité"),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
               TextField(
                 controller: _placeController,
                 decoration: const InputDecoration(labelText: 'Lieu'),
@@ -170,6 +216,7 @@ class PublishArticlePageState extends State<PublishArticlePage> {
     DateTime limitDate = DateTime.parse(_limitDateController.text);
     String place = _placeController.text;
     int number = int.parse(_numberController.text);
+    String? type = _selectedType;
 
     CollectionReference activities = FirebaseFirestore.instance.collection('ACTIVITYDATA');
 
@@ -190,6 +237,7 @@ class PublishArticlePageState extends State<PublishArticlePage> {
       "maxNumber": number,
       "numberOfRemainingEntries": number,
       "participants": [],
+      "type": type,
     });
     
     //Supprime les valeurs des controlleurs
@@ -199,6 +247,10 @@ class PublishArticlePageState extends State<PublishArticlePage> {
     _placeController.clear();
     _numberController.clear();
     _limitDateController.clear();
+    //Supprime la valeur dans la liste
+    setState(() {
+      _selectedType = null;
+    });
 
     //affiche un message de confirmation
     if (context.mounted) {
