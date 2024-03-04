@@ -71,12 +71,17 @@ class ConnectionPageState extends State<ConnectionPage> {
                   }
                 } catch (e) {
                   if (context.mounted) {
-                    if (e.toString()=="[firebase_auth/wrong-password] The password is invalid or the user does not have a password.") {
+                    if (e.toString().contains("wrong-password")) {
                       showErrorDialog(context, "Mot de passe incorrect.");
                       passwordController.clear();
-                    } else if (e.toString()=="[firebase_auth/too-many-requests] We have blocked all requests from this device due to unusual activity. Try again later.") {
+                    }
+                    else if (e.toString().contains("too-many-requests")) {
                       showErrorDialog(context, "Votre compte est temporairement blocké \n suite à plusieurs tentative de connexion échoué");
                       passwordController.clear();
+                    }
+                    else{
+                      showErrorDialog(context, "Vérifez votre connexion internet ou votre adresse mail");
+                      passwordController.clear();                      
                     }
                   }
                 }        

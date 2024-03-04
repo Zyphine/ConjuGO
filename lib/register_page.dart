@@ -244,7 +244,7 @@ class RegisterPageState extends State<RegisterPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Incriptions effectuée"),
+            title: const Text("Incription effectuée"),
             content: const Text("Vous êtes inscrit, retour à la page d'accueil."),
             actions: [
               TextButton(

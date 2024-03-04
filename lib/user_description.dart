@@ -2,22 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conjugo/user_list.dart';
 
-
-
-//Page description des activités
 class UserDescriptionPage extends StatelessWidget {
-  final String nom;
-  final String prenom;
-  final String dateDeNaissance;
-  final String mail;
-  final bool admin;
-  final bool superAdmin;
-  final String userId;
-  final String phone;
+  String nom;
+  String prenom;
+  String dateDeNaissance;
+  String mail;
+  bool admin;
+  bool superAdmin;
+  String userId;
+  String phone;
 
-  const UserDescriptionPage(
+  UserDescriptionPage(
       {super.key,
-      //Définitions des éléments requis
       required this.nom,
       required this.prenom,
       required this.dateDeNaissance,
@@ -25,8 +21,59 @@ class UserDescriptionPage extends StatelessWidget {
       required this.admin,
       required this.superAdmin, 
       required this.userId,
-      required this.phone,
+      required this.phone
       });
+
+  bool isAdmin() {
+    return admin;
+  }
+
+  bool isNormalUser() {
+    return !admin;
+  }
+
+  Widget renderAdminButton(BuildContext context) {
+    if (isNormalUser()) {
+      return ElevatedButton(
+        onPressed: () => putAdmin(context),
+        style: ButtonStyle(
+          maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+          minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Rendre Administrateur '),
+            Icon(Icons.add_moderator),
+          ],
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  Widget renderRemoveAdminButton(BuildContext context) {
+    if (isAdmin()) {
+      return ElevatedButton(
+        onPressed: () => removeAdmin(context),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+           maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+           minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Enlever Administrateur '),
+            Icon(Icons.remove_moderator),
+          ],
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +83,6 @@ class UserDescriptionPage extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const SizedBox(height: 16.0),
             Padding(
@@ -49,20 +95,6 @@ class UserDescriptionPage extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(mail),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Numéro de téléphone : ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(phone),
                 ],
               ),
             ),
@@ -87,6 +119,20 @@ class UserDescriptionPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
+                    'Numéro de téléphone : ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(phone),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
                     'Statut : ',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -100,50 +146,20 @@ class UserDescriptionPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32.0),
-            ElevatedButton(
-              onPressed: () => putAdmin(context),
-              style: ButtonStyle(
-                      maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
-                      minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
-              ),
-              child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Rendre Administrateur '),
-                        Icon(Icons.add_moderator),
-                      ],
-                    ),
-            ),
+            renderAdminButton(context),
             const SizedBox(height: 32.0),
-            ElevatedButton(
-              onPressed: () => removeAdmin(context),
-              style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                      maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
-                      minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
-              ),
-              child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Enlever Administrateur '),
-                        Icon(Icons.remove_moderator),
-                      ],
-                    ),
-            ),
+            renderRemoveAdminButton(context),
           ],
         ),
       ),
     );
   }
 
-
   Future<void> putAdmin(BuildContext context) async {
     final personne = FirebaseFirestore.instance.collection("USERDATA").doc(userId);
     personne.get().then(
       (DocumentSnapshot doc) {
-        //final data = doc.data() as Map<String, dynamic>;
-        personne.update({"admin": true}).then( //on met à jour le document
-        //publication.update({"numberOfRemainingEntries": numberOfRemainingEntries-1}).then( //on enlève une place
+        personne.update({"admin": true}).then(
           (value) => showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -151,9 +167,9 @@ class UserDescriptionPage extends StatelessWidget {
               actions: <Widget>[
                 TextButton(
                   onPressed: () => {Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const UserListPage()),
-                    )},
+                    context,
+                    MaterialPageRoute(builder: (context) => const UserListPage()),
+                  )},
                   child: const Text('OK'),
                 ),
               ],
@@ -168,9 +184,7 @@ class UserDescriptionPage extends StatelessWidget {
     final personne = FirebaseFirestore.instance.collection("USERDATA").doc(userId);
     personne.get().then(
       (DocumentSnapshot doc) {
-        //final data = doc.data() as Map<String, dynamic>;
-        personne.update({"admin": false}).then( //on met à jour le document
-        //publication.update({"numberOfRemainingEntries": numberOfRemainingEntries-1}).then( //on enlève une place
+        personne.update({"admin": false}).then(
           (value) => showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -178,9 +192,9 @@ class UserDescriptionPage extends StatelessWidget {
               actions: <Widget>[
                 TextButton(
                   onPressed: () => {Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const UserListPage()),
-                    )},
+                    context,
+                    MaterialPageRoute(builder: (context) => const UserListPage()),
+                  )},
                   child: const Text('OK'),
                 ),
               ],
