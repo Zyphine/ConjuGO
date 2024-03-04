@@ -32,7 +32,7 @@ class Activity {
     this.place,
     this.numberOfRemainingEntries,
     this.documentId,
-    this.maxNumber
+    this.maxNumber,
   });
 
   factory Activity.fromFirestore(

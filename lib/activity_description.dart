@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conjugo/activity_participants.dart';
+import 'package:conjugo/add_participants.dart';
 import 'package:conjugo/connection_page.dart';
 import 'package:conjugo/list_activity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -197,6 +198,40 @@ class DescriptionPageState extends State<DescriptionPage> {
                       children: [
                         Text('Voir les participants '),
                         Icon(Icons.people_alt),
+                      ],
+                    )
+                  )
+                  : Container(); //renvoi un container vide si l'utilisateur n'est pas administrateur
+                }
+              },
+            ),
+            FutureBuilder<bool>(
+              future: auth.isUserAdmin(), 
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(); // renvoi un container vide pendant l'attente
+                } else if (snapshot.hasError) {
+                  return Container(); // renvoi un container vide en cas d'erreur
+                } else {
+                  bool isAdmin = snapshot.data ?? false;
+
+                  // N'afficher le boutton supprimer que si l'utilisateur est admin
+                  return isAdmin? ElevatedButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => UserParticipantsPage(documentId: widget.documentId)
+                      )
+                    ),
+                    style: ButtonStyle(
+                      maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                      minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Ajouter un participant '),
+                        Icon(Icons.person_add),
                       ],
                     )
                   )
