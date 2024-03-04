@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conjugo/user_list.dart';
+import 'package:conjugo/authentication_service.dart';
 
 class UserDescriptionPage extends StatelessWidget {
+
+  final AuthenticationService auth = AuthenticationService();
   String nom;
   String prenom;
   String dateDeNaissance;
@@ -145,10 +148,29 @@ class UserDescriptionPage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 32.0),
-            renderAdminButton(context),
-            const SizedBox(height: 32.0),
-            renderRemoveAdminButton(context),
+
+            FutureBuilder<bool>(
+            future: auth.isUserSuperAdmin(), 
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(); // renvoi un container vide pendant l'attente
+              } else if (snapshot.hasError) {
+                return Container(); // renvoi un container vide en cas d'erreur
+              } else {
+                bool isSuperAdmin = snapshot.data ?? false;
+
+                // N'afficher les bouttons que si l'utilisateur est super admin
+                return isSuperAdmin? Column(
+                  children: [
+                    const SizedBox(height: 32.0),
+                    renderAdminButton(context),
+                    const SizedBox(height: 32.0),
+                    renderRemoveAdminButton(context),
+                  ],
+                ): Container(); //renvoi un container vide si l'utilisateur n'est pas super administrateur
+              }
+            },
+          ),
           ],
         ),
       ),
