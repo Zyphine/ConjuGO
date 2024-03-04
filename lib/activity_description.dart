@@ -17,6 +17,7 @@ class DescriptionPage extends StatefulWidget {
   final int numberOfRemainingEntries;
   final String documentId;
   final int maxNumber;
+  final String type;
 
   const DescriptionPage(
     {super.key,
@@ -28,7 +29,8 @@ class DescriptionPage extends StatefulWidget {
     required this.place,
     required this.numberOfRemainingEntries,
     required this.documentId,
-    required this.maxNumber});
+    required this.maxNumber,
+    required this.type});
 
   @override
   DescriptionPageState createState() => DescriptionPageState();
@@ -92,6 +94,20 @@ class DescriptionPageState extends State<DescriptionPage> {
                         },
                       ),
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'Type :\n',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(widget.type.toString()),
                   ],
                 ),
               ),
