@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +16,7 @@ class PublishArticlePageState extends State<PublishArticlePage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
+  final TextEditingController _limitDateController = TextEditingController();
 
 
   @override
@@ -60,7 +59,7 @@ class PublishArticlePageState extends State<PublishArticlePage> {
                     lastDate: DateTime(2100),
                   );
 
-                  if (pickedDate != null) {
+                  if (pickedDate != null && context.mounted) {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.now(),
@@ -93,6 +92,52 @@ class PublishArticlePageState extends State<PublishArticlePage> {
               ),
               const SizedBox(height: 10),
               TextField(
+                controller: _limitDateController,
+                decoration: const InputDecoration(
+                      icon: Icon(Icons.event_busy),
+                      labelText: "Date limite d'inscription"),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedLimitDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+
+                  if (pickedLimitDate != null && context.mounted) {
+                    TimeOfDay? pickedLimitTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      }
+                    );
+
+                    if (pickedLimitTime != null) {
+                      //combine l'heure et la date
+                      DateTime combinedLimitDateTime = DateTime(
+                        pickedLimitDate.year,
+                        pickedLimitDate.month,
+                        pickedLimitDate.day,
+                        pickedLimitTime.hour,
+                        pickedLimitTime.minute,
+                      );
+
+                      //change le format de date+heure
+                      String formattedLimitDateTime = DateFormat('yyyy-MM-dd HH:mm').format(combinedLimitDateTime);
+
+                      //mise a jour du champ
+                      _limitDateController.text = formattedLimitDateTime;
+                    }
+                  }
+                }
+              ),
+              const SizedBox(height: 10),
+              TextField(
                 controller: _placeController,
                 decoration: const InputDecoration(labelText: 'Lieu'),
               ),
@@ -106,7 +151,7 @@ class PublishArticlePageState extends State<PublishArticlePage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  onSubmit();
+                  onSubmit(context);
                 },
                 child: const Text('Publier'),
               ),
@@ -117,11 +162,12 @@ class PublishArticlePageState extends State<PublishArticlePage> {
     );
   }
 
-  Future<void> onSubmit() async {
+  Future<void> onSubmit(BuildContext context) async {
     //Récupère les valeurs des controlleurs du formulaire
     String title = _titleController.text;
     String description = _descriptionController.text;
     DateTime date = DateTime.parse(_dateController.text);
+    DateTime limitDate = DateTime.parse(_limitDateController.text);
     String place = _placeController.text;
     int number = int.parse(_numberController.text);
 
@@ -139,6 +185,7 @@ class PublishArticlePageState extends State<PublishArticlePage> {
       "name": title,
       "description": description,
       "date": date,
+      "limitDate": limitDate,
       "place": place,
       "maxNumber": number,
       "numberOfRemainingEntries": number,
@@ -151,11 +198,14 @@ class PublishArticlePageState extends State<PublishArticlePage> {
     _dateController.clear();
     _placeController.clear();
     _numberController.clear();
+    _limitDateController.clear();
 
     //affiche un message de confirmation
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Publication ajoutée avec succès'),
-      duration: Duration(seconds: 5),
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Publication ajoutée avec succès'),
+        duration: Duration(seconds: 5),
     ));
+    }
   }
 }

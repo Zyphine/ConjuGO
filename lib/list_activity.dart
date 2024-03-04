@@ -20,6 +20,7 @@ class Activity {
   String? name = "";
   String? description= "";
   Timestamp? date;
+  Timestamp? limitDate;
   String? place = "";
   int? numberOfRemainingEntries = 0;
   String? documentId = "";
@@ -29,6 +30,7 @@ class Activity {
     this.name,
     this.description,
     this.date,
+    this.limitDate,
     this.place,
     this.numberOfRemainingEntries,
     this.documentId,
@@ -46,6 +48,7 @@ class Activity {
         name: data?['name'],
         description: data?['description'],
         date: data?['date'],
+        limitDate: data?['limitDate'],
         place: data?['place'],
         numberOfRemainingEntries: data?['numberOfRemainingEntries'],
         documentId : data?['documentId'],
@@ -68,7 +71,7 @@ class Activity {
 
     return dateStr[0].toUpperCase() + dateStr.substring(1);
   }
-  
+  Timestamp? getLimitDate() => limitDate;
   String getPlace() => place.toString();
   String getNumberOfRemainingEntries() => numberOfRemainingEntries.toString();
   String getDocumentId() => documentId.toString();
@@ -121,6 +124,7 @@ class ListViewHome extends State<ListViewHomeLayout> {
                               name: activity.getName(),
                               description: activity.getDescription(),
                               date: activity.getDate(),
+                              limitDate: activity.getLimitDate(),
                               place: activity.getPlace(),
                               numberOfRemainingEntries: int.parse(activity.getNumberOfRemainingEntries()),
                               documentId: activity.getDocumentId(),
