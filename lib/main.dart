@@ -3,6 +3,7 @@ import 'package:conjugo/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:conjugo/authentication_service.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 //Création d'une instance de la classe Authentification
 AuthenticationService auth = AuthenticationService();
@@ -26,7 +27,33 @@ class HomePage extends StatelessWidget {
       title: 'Conjugo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: Colors.blue,
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Colors.blue,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+            maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+            minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+            textStyle: MaterialStateProperty.all<TextStyle>(const TextStyle(color: Colors.white)),
+          )
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+        ),
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('fr'), // French
+      ],
       home: const MyHomePage(title: 'Conjugo'),
     );
   }

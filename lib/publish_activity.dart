@@ -1,23 +1,44 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class PublishArticlePage extends StatefulWidget {
-  const PublishArticlePage({Key? key}) : super(key: key);
+  const PublishArticlePage({super.key});
 
   @override
-  _PublishArticlePageState createState() => _PublishArticlePageState();
+  PublishArticlePageState createState() => PublishArticlePageState();
 }
 
-class _PublishArticlePageState extends State<PublishArticlePage> {
+class PublishArticlePageState extends State<PublishArticlePage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
+  final TextEditingController _limitDateController = TextEditingController();
+  String? _selectedType;
+
+  Future<List<String>> fetchDataFromFirestore() async {
+    List<String> types = [];
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('ACTIVITYGENRE').get();
+      for (var doc in querySnapshot.docs) {
+        types.add(doc['nom']);
+      }
+      types.sort();
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+    return types;
+  }
+
+  // Méthode appelée lorsque la valeur de la DropdownButton est changée
+  void onChanged(String? value) {
+    setState(() {
+      _selectedType = value;
+    });
+  }
 
 
   @override
@@ -60,7 +81,7 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
                     lastDate: DateTime(2100),
                   );
 
-                  if (pickedDate != null) {
+                  if (pickedDate != null && context.mounted) {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.now(),
@@ -93,6 +114,76 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
               ),
               const SizedBox(height: 10),
               TextField(
+                controller: _limitDateController,
+                decoration: const InputDecoration(
+                      icon: Icon(Icons.event_busy),
+                      labelText: "Date limite d'inscription"),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? pickedLimitDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+
+                  if (pickedLimitDate != null && context.mounted) {
+                    TimeOfDay? pickedLimitTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                      builder: (BuildContext context, Widget? child) {
+                        return MediaQuery(
+                          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                          child: child!,
+                        );
+                      }
+                    );
+
+                    if (pickedLimitTime != null) {
+                      //combine l'heure et la date
+                      DateTime combinedLimitDateTime = DateTime(
+                        pickedLimitDate.year,
+                        pickedLimitDate.month,
+                        pickedLimitDate.day,
+                        pickedLimitTime.hour,
+                        pickedLimitTime.minute,
+                      );
+
+                      //change le format de date+heure
+                      String formattedLimitDateTime = DateFormat('yyyy-MM-dd HH:mm').format(combinedLimitDateTime);
+
+                      //mise a jour du champ
+                      _limitDateController.text = formattedLimitDateTime;
+                    }
+                  }
+                }
+              ),
+              const SizedBox(height: 10),
+              FutureBuilder<List<String>>(
+                future: fetchDataFromFirestore(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    List<String> items = snapshot.data ?? [];
+                    return DropdownButton<String>(
+                      value: _selectedType,
+                      items: items.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: onChanged,
+                      hint: const Text("Type d'activité"),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
+              TextField(
                 controller: _placeController,
                 decoration: const InputDecoration(labelText: 'Lieu'),
               ),
@@ -106,7 +197,7 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  onSubmit();
+                  onSubmit(context);
                 },
                 child: const Text('Publier'),
               ),
@@ -117,13 +208,15 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     );
   }
 
-  Future<void> onSubmit() async {
+  Future<void> onSubmit(BuildContext context) async {
     //Récupère les valeurs des controlleurs du formulaire
     String title = _titleController.text;
     String description = _descriptionController.text;
     DateTime date = DateTime.parse(_dateController.text);
+    DateTime limitDate = DateTime.parse(_limitDateController.text);
     String place = _placeController.text;
     int number = int.parse(_numberController.text);
+    String? type = _selectedType;
 
     CollectionReference activities = FirebaseFirestore.instance.collection('ACTIVITYDATA');
 
@@ -139,10 +232,12 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
       "name": title,
       "description": description,
       "date": date,
+      "limitDate": limitDate,
       "place": place,
       "maxNumber": number,
       "numberOfRemainingEntries": number,
       "participants": [],
+      "type": type,
     });
     
     //Supprime les valeurs des controlleurs
@@ -151,11 +246,18 @@ class _PublishArticlePageState extends State<PublishArticlePage> {
     _dateController.clear();
     _placeController.clear();
     _numberController.clear();
+    _limitDateController.clear();
+    //Supprime la valeur dans la liste
+    setState(() {
+      _selectedType = null;
+    });
 
     //affiche un message de confirmation
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Publication ajoutée avec succès'),
-      duration: Duration(seconds: 5),
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Publication ajoutée avec succès'),
+        duration: Duration(seconds: 5),
     ));
+    }
   }
 }

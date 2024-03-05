@@ -10,7 +10,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Publication Dashboard'),
+        title: const Text('Tableau de bord'),
       ),
       body: Center(
         child: Column(
@@ -32,48 +32,39 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+              ),
               onPressed: () {
                 Navigator.push(context,
                       PageRouteBuilder(pageBuilder: (_, __, ___) => const PublishArticlePage()));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Ajouter une Publication'),
-              ),
+              child: const Text('Ajouter une Publication'),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+              ),
               onPressed: () {
                 Navigator.push(context,
                       PageRouteBuilder(pageBuilder: (_, __, ___) =>  const ListViewHomeLayout()));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Voir les Publications'),
-              ),
+              child: const Text('Voir les Publications'),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
+              style: ButtonStyle(
+                maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+              ),
               onPressed: () {
                 Navigator.push(context,
                       PageRouteBuilder(pageBuilder: (_, __, ___) =>  const UserListPage()));
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Voir les Utilisateurs'),
-              ),
+              child: const Text('Voir les Utilisateurs'),
             ),
 
           ],

@@ -10,28 +10,23 @@ class AuthenticationService {
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
   //Fonction permettant de se connecter avec un mail et un mdp
-  Future signInWithEmailAndPassword(String email, String password) async {
-    try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      User? user = result.user;
-      return user;
-    } catch (exception) {
-      print(exception.toString());
-      return null;
-    }
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+  try {
+    UserCredential result = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
+    return result.user;
+  } catch (exception) {
+    rethrow; 
   }
+}
 
   //Fonction permettant de s'inscrire (créer un user) avec un mail et un mdp
-  Future registerWithEmailAndPassword(String email, String password) async {
+  Future<User?> registerWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      User? user = result.user;
-      print(user.toString());
+      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      return result.user;
     } catch (exception) {
-      print(exception.toString());
-      return null;
+      rethrow; 
     }
   }
 
@@ -40,7 +35,6 @@ class AuthenticationService {
     try {
       return await _auth.signOut();
     } catch (exception) {
-      print(exception.toString());
       return null;
     }
   }
@@ -65,7 +59,18 @@ class AuthenticationService {
       dynamic isAdmin = snapshot.data()?['admin'];
       return isAdmin;
     } else {
-      print('Aucun utilisateur connecté.');
+      return false;
+    }
+  }
+
+  Future<bool> isUserSuperAdmin() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+        //Récupère le champ booléen superAdmin depuis firebase
+        DocumentSnapshot<Map<String, dynamic>> snapshot = await db.collection('USERDATA').doc(user.uid).get();
+        dynamic isSuperAdmin = snapshot.data()?['superAdmin'];
+        return isSuperAdmin;
+    } else {
       return false;
     }
   }
