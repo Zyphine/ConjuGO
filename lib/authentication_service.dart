@@ -65,10 +65,10 @@ class AuthenticationService {
   Future<bool> isUserSuperAdmin() async {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-        //Récupère le champ booléen admin depuis firebase
+        //Récupère le champ booléen superAdmin depuis firebase
         DocumentSnapshot<Map<String, dynamic>> snapshot = await db.collection('USERDATA').doc(user.uid).get();
-        dynamic isAdmin = snapshot.data()?['superAdmin'];
-        return isAdmin;
+        dynamic isSuperAdmin = snapshot.data()?['superAdmin'];
+        return isSuperAdmin;
     } else {
       return false;
     }

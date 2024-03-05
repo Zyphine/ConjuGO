@@ -25,6 +25,7 @@ class Activity {
   int? numberOfRemainingEntries = 0;
   String? documentId = "";
   int? maxNumber = 0;
+  String? type="";
 
   Activity({
     this.name,
@@ -35,6 +36,7 @@ class Activity {
     this.numberOfRemainingEntries,
     this.documentId,
     this.maxNumber,
+    this.type,
   });
 
   factory Activity.fromFirestore(
@@ -52,7 +54,8 @@ class Activity {
         place: data?['place'],
         numberOfRemainingEntries: data?['numberOfRemainingEntries'],
         documentId : data?['documentId'],
-        maxNumber : data?['maxNumber']
+        maxNumber : data?['maxNumber'],
+        type : data?['type'],
       );
   }
 
@@ -76,6 +79,7 @@ class Activity {
   String getNumberOfRemainingEntries() => numberOfRemainingEntries.toString();
   String getDocumentId() => documentId.toString();
   String getMaxNumber() => maxNumber.toString();
+  String getType() => type.toString();
 }
 
 class ListViewHome extends State<ListViewHomeLayout> {
@@ -129,6 +133,7 @@ class ListViewHome extends State<ListViewHomeLayout> {
                               numberOfRemainingEntries: int.parse(activity.getNumberOfRemainingEntries()),
                               documentId: activity.getDocumentId(),
                               maxNumber: int.parse(activity.getMaxNumber()),
+                              type : activity.getType(),
                             ),
                           ),
                         );
