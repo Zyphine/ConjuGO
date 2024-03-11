@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:conjugo/list_activity.dart';
+
 
 class SearchWidget extends StatefulWidget{
   final String text;
@@ -7,23 +7,23 @@ class SearchWidget extends StatefulWidget{
   final String hintText;
 
   const SearchWidget({
-    Key? key,
+    super.key,
     required this.text,
     required this.onChanged,
     required this.hintText,
-  }) : super(key: key);
+  });
 
   @override
-  _SearchWidgetState createState() => _SearchWidgetState();
+  SearchWidgetState createState() => SearchWidgetState();
 }
 
-class _SearchWidgetState extends State<SearchWidget>{
+class SearchWidgetState extends State<SearchWidget>{
   final controller = TextEditingController();
 
   @override
   Widget build(BuildContext context){
-    final styleActive = TextStyle(color: Colors.black);
-    final styleHint = TextStyle(color: Colors.black54);
+    const styleActive = TextStyle(color: Colors.black);
+    const styleHint = TextStyle(color: Colors.black54);
     final style = widget.text.isEmpty ? styleHint : styleActive;
 
     return Container(

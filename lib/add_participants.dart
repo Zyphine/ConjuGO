@@ -1,16 +1,15 @@
-import 'package:conjugo/drawer_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conjugo/search_widget.dart';
-import 'package:conjugo/user_description.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
-class UserListPage extends StatefulWidget {
-  const UserListPage({super.key});
+class UserParticipantsPage extends StatefulWidget {
+  final String documentId;
+  const UserParticipantsPage({super.key, required this.documentId});
 
   @override
-  UserListHome createState() => UserListHome();
+  UserParticipantsHome createState() => UserParticipantsHome();
 }
 
 class Personne {
@@ -62,7 +61,7 @@ class Personne {
   String getPhone() => phone.toString();
 }
 
-class UserListHome extends State<UserListPage> {
+class UserParticipantsHome extends State<UserParticipantsPage> {
   Future<List<Personne>> dataFinder() async {
     final querySnapshot = await db.collection("USERDATA").get();
     return querySnapshot.docs.map((doc) => Personne.fromFirestore(doc, null)).toList();
@@ -76,18 +75,16 @@ class UserListHome extends State<UserListPage> {
   Widget build(BuildContext context) {
     if (personneList.isEmpty) {
       return Scaffold(
-        drawer: DrawerMenu(),
         appBar: AppBar(
-          title: const Text("Liste des Utilisateurs"),
+          title: const Text("Ajouter des Utilisateurs"),
           centerTitle: true,
         ),
         body: const Center(child: CircularProgressIndicator()),
       );
     } else {
       return Scaffold(
-        drawer: DrawerMenu(),
         appBar: AppBar(
-          title: const Text("Liste des Utilisateurs"),
+          title: const Text("Ajouter des Utilisateurs"),
           centerTitle: true,
         ),
         body: Column(
@@ -98,29 +95,18 @@ class UserListHome extends State<UserListPage> {
                 itemCount: filteredList.length,
                 itemBuilder: (context, index) {
                   final personne = filteredList[index];
-                  return Card(
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => UserDescriptionPage(
-                              nom: personne.getNom(),
-                              prenom: personne.getPrenom(),
-                              dateDeNaissance: personne.getDateDeNaissance(),
-                              mail: personne.getMail(),
-                              admin: bool.parse(personne.getAdmin()),
-                              superAdmin: bool.parse(personne.getSuperAdmin()),
-                              userId: personne.getUserId(),
-                              phone: personne.getPhone(),
-                            ),
-                          ),
-                        );
-                      },
-                      title: Text("${personne.getNom()} ${personne.getPrenom()}"),
-                      subtitle: Text("${personne.getMail()} \n ${personne.getPhone()}"),
-                      leading: const Icon(Icons.account_circle),
-                    ),
+                  //isParticipating(personne.getUserId(), widget.documentId, userParticipationStatus);
+                  return GestureDetector(
+                    onTap: () {
+                      addParticipant(context, personne.getUserId());
+                    },
+                    child: Card(
+                      child: ListTile(
+                        title: Text("${personne.getNom()} ${personne.getPrenom()}"),
+                        subtitle: Text("${personne.getMail()} \n ${personne.getPhone()}"),
+                        leading: const Icon(Icons.account_circle),
+                      ),
+                    )
                   );
                 },
               ),
@@ -156,5 +142,54 @@ class UserListHome extends State<UserListPage> {
         filteredList = list;
       });
     });
+  }
+
+  void addParticipant(BuildContext context, String participantId) async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await db.collection("ACTIVITYDATA").doc(widget.documentId).get();
+    List listParticipants = snapshot.data()?['participants'];
+    if (listParticipants.contains(participantId)) {
+      if (context.mounted) {
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text("Erreur"),
+            content: const Text("L'utilisateur est déjà inscrit pour cette activité"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => {Navigator.pop(context)},
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      int nb = snapshot.data()?['numberOfRemainingEntries'];
+      if (context.mounted) {
+        if (nb > 0) {
+          listParticipants.add(participantId);
+          db.collection("ACTIVITYDATA").doc(widget.documentId).update({'participants': listParticipants});
+          db.collection("ACTIVITYDATA").doc(widget.documentId).update({'numberOfRemainingEntries': FieldValue.increment(-1)});
+          showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text("Confirmation d'inscription"),
+              content: const Text("L'utilisateur à été incrit à cette activité"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => {Navigator.pop(context)},
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          ).then((value) => Navigator.pop(context));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Il ne reste plus de place disponible pour cette activité'),
+          duration: Duration(seconds: 5),
+          ));
+        }
+      }
+    }
   }
 }
