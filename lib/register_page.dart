@@ -16,9 +16,43 @@ class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
   @override
   RegisterPageState createState() => RegisterPageState();
+
+  void viewCGUDocument(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Conditions Générales d\'Utilisation'),
+          content: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ...',
+                ),
+                Text(
+                  '2. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ...',
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class RegisterPageState extends State<RegisterPage> {
+  bool acceptCGU = false;
+
   //Initialisation des champs textuels
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -46,24 +80,25 @@ class RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    authListener = FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    authListener =
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
       //On regarde si un user est donc connecté, si oui, on prend son id
-        if (user != null) {
-          String userUid = auth.getUser();
-          //Insertion des infos user dans la base firestore
-          db.collection("USERDATA").doc(userUid).set({
-            "userId" : userUid,
-            "nom": nameController.text,
-            "prenom": surnameController.text,
-            "dateDeNaissance": dateController.text,
-            "admin": false,
-            "superAdmin": false,
-            "mail": emailController.text,
-            "phone" : phoneController.text,
-          });
-          //Redirection vers page accueil activités
-          showConfirmDialog(context);
-        }
+      if (user != null) {
+        String userUid = auth.getUser();
+        //Insertion des infos user dans la base firestore
+        db.collection("USERDATA").doc(userUid).set({
+          "userId": userUid,
+          "nom": nameController.text,
+          "prenom": surnameController.text,
+          "dateDeNaissance": dateController.text,
+          "admin": false,
+          "superAdmin": false,
+          "mail": emailController.text,
+          "phone": phoneController.text,
+        });
+        //Redirection vers page accueil activités
+        showConfirmDialog(context);
+      }
     });
   }
 
@@ -123,7 +158,7 @@ class RegisterPageState extends State<RegisterPage> {
                         initialDate: DateTime.now(),
                         firstDate: DateTime(1920),
                         lastDate: DateTime(2025),
-                        locale : const Locale('fr'));
+                        locale: const Locale('fr'));
                     //On transforme la date au format souhaité
                     if (pickedDate != null) {
                       String formattedDate =
@@ -134,32 +169,34 @@ class RegisterPageState extends State<RegisterPage> {
                   }),
               const SizedBox(height: 20),
               TextFormField(
-                  //Téléphone
-                  controller: phoneController,
-                  contextMenuBuilder: (context, editableTextState) {
-                    final List<ContextMenuButtonItem> buttonItems = editableTextState.contextMenuButtonItems;
-                    return AdaptiveTextSelectionToolbar.buttonItems(
-                      anchors: editableTextState.contextMenuAnchors,
-                      buttonItems: buttonItems,
-                    );
-                  },
-                  decoration: const InputDecoration(labelText: "Numéro de téléphone"),
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                //Téléphone
+                controller: phoneController,
+                contextMenuBuilder: (context, editableTextState) {
+                  final List<ContextMenuButtonItem> buttonItems =
+                      editableTextState.contextMenuButtonItems;
+                  return AdaptiveTextSelectionToolbar.buttonItems(
+                    anchors: editableTextState.contextMenuAnchors,
+                    buttonItems: buttonItems,
+                  );
+                },
+                decoration:
+                    const InputDecoration(labelText: "Numéro de téléphone"),
+                keyboardType: TextInputType.phone,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 20),
               TextFormField(
                   //Mail
                   controller: emailController,
                   contextMenuBuilder: (context, editableTextState) {
-                    final List<ContextMenuButtonItem> buttonItems = editableTextState.contextMenuButtonItems;
+                    final List<ContextMenuButtonItem> buttonItems =
+                        editableTextState.contextMenuButtonItems;
                     return AdaptiveTextSelectionToolbar.buttonItems(
                       anchors: editableTextState.contextMenuAnchors,
                       buttonItems: buttonItems,
                     );
                   },
                   decoration: const InputDecoration(labelText: " Mail")),
-             
               const SizedBox(height: 20),
               TextFormField(
                   // MDP
@@ -167,34 +204,62 @@ class RegisterPageState extends State<RegisterPage> {
                   controller: passwordController,
                   contextMenuBuilder: null,
                   decoration: InputDecoration(
-                    labelText: " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)",
+                    labelText:
+                        " Mot de Passe (minimum 8 caractères, au moins 1 lettre et 1 chiffre)",
                     suffixIcon: IconButton(
-                      icon: Icon(obscureText1 ? Icons.visibility : Icons.visibility_off),
+                      icon: Icon(obscureText1
+                          ? Icons.visibility
+                          : Icons.visibility_off),
                       onPressed: () {
                         setState(() {
                           obscureText1 = !obscureText1;
                         });
                       },
                     ),
-                  )
-              ),
+                  )),
               const SizedBox(height: 20),
               TextFormField(
-                //MDP 2
-                obscureText: obscureText2,
-                controller: passwordController2,
-                contextMenuBuilder: null,
-                decoration: InputDecoration(
-                  labelText: " Rentrez votre mot de passe une seconde fois",
-                  suffixIcon: IconButton(
-                    icon: Icon(obscureText2 ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
+                  //MDP 2
+                  obscureText: obscureText2,
+                  controller: passwordController2,
+                  contextMenuBuilder: null,
+                  decoration: InputDecoration(
+                    labelText: " Rentrez votre mot de passe une seconde fois",
+                    suffixIcon: IconButton(
+                      icon: Icon(obscureText2
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          obscureText2 = !obscureText2;
+                        });
+                      },
+                    ),
+                  )),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Checkbox(
+                    value: acceptCGU,
+                    onChanged: (value) {
                       setState(() {
-                        obscureText2 = !obscureText2;
+                        acceptCGU = value!;
                       });
                     },
                   ),
-                )
+                  GestureDetector(
+                    onTap: () {
+                      viewCGUDocument(context);
+                    },
+                    child: const Text(
+                      'En cochant cette case, je confirme avoir lu et \naccepté les Conditions Générales d\'Utilisation.',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 0, 187, 245),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ])),
             ElevatedButton(
@@ -202,29 +267,56 @@ class RegisterPageState extends State<RegisterPage> {
                 child: const Text("S'inscrire"),
                 onPressed: () //=> print(emailControler.text),
                     async {
+                  if (acceptCGU) {
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Erreur'),
+                          content: const Text(
+                              'Veuillez accepter les CGU pour continuer.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                   //Vérifications que le mdp est dans le bon format et qu'il a bien été rédigé 2 fois
                   if (passwordController.text.length >= 8 &&
                       passwordController.text == passwordController2.text &&
-                      passwordContainLetterAndNumber(passwordController.text) == true) {
+                      passwordContainLetterAndNumber(passwordController.text) ==
+                          true) {
                     //Vérifications que le mail a bien été rentré correctement 2 fois
-                      //Inscription
-                      try {
-                        await auth.registerWithEmailAndPassword(emailController.text, passwordController.text);
-                        // Connecte l'utilisateur après l'inscription
-                        await auth.signInWithEmailAndPassword(emailController.text, passwordController.text);
-                      } catch (exception) {
-                        if (context.mounted) {
-                          if (exception.toString()=="[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
-                            showErrorDialog(context, "Un compte avec la même adresse email existe déjà");
-                            emailController.clear();
-                          } else if (exception.toString()=="[firebase_auth/invalid-email] The email address is badly formatted.") {
-                            showErrorDialog(context, "format d'email invalide");
-                            emailController.clear();
-                          }
+                    //Inscription
+                    try {
+                      await auth.registerWithEmailAndPassword(
+                          emailController.text, passwordController.text);
+                      // Connecte l'utilisateur après l'inscription
+                      await auth.signInWithEmailAndPassword(
+                          emailController.text, passwordController.text);
+                    } catch (exception) {
+                      if (context.mounted) {
+                        if (exception.toString() ==
+                            "[firebase_auth/email-already-in-use] The email address is already in use by another account.") {
+                          showErrorDialog(context,
+                              "Un compte avec la même adresse email existe déjà");
+                          emailController.clear();
+                        } else if (exception.toString() ==
+                            "[firebase_auth/invalid-email] The email address is badly formatted.") {
+                          showErrorDialog(context, "format d'email invalide");
+                          emailController.clear();
                         }
-                        passwordController.clear();
-                        passwordController2.clear();
                       }
+                      passwordController.clear();
+                      passwordController2.clear();
+                    }
                   } else {
                     showErrorDialog(context, "Mot de passe trop faible");
                     passwordController.clear();
@@ -245,7 +337,8 @@ class RegisterPageState extends State<RegisterPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text("Incription effectuée"),
-            content: const Text("Vous êtes inscrit, retour à la page d'accueil."),
+            content:
+                const Text("Vous êtes inscrit, retour à la page d'accueil."),
             actions: [
               TextButton(
                 child: const Text("OK"),
@@ -253,11 +346,11 @@ class RegisterPageState extends State<RegisterPage> {
                   Navigator.of(context).pop();
                   if (mounted) {
                     Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ListViewHomeLayout(),
-                      ),
-                      (Route<dynamic> route) => false);
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ListViewHomeLayout(),
+                        ),
+                        (Route<dynamic> route) => false);
                   }
                 },
               ),
@@ -286,5 +379,37 @@ class RegisterPageState extends State<RegisterPage> {
         },
       );
     }
+  }
+
+  viewCGUDocument(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Conditions Générales d\'Utilisation'),
+          content: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ...',
+                ),
+                Text(
+                  '2. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ...',
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fermer'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
