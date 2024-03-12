@@ -3,6 +3,7 @@ import 'package:conjugo/activity_participants.dart';
 import 'package:conjugo/add_participants.dart';
 import 'package:conjugo/connection_page.dart';
 import 'package:conjugo/list_activity.dart';
+import 'package:conjugo/modify_activity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -212,7 +213,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                 },
               ),
               FutureBuilder<bool>(
-                future: auth.isUserAdmin(), 
+                future: isOwnerAndAdmin(), 
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(); // renvoi un container vide pendant l'attente
@@ -241,7 +242,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                 },
               ),
               FutureBuilder<bool>(
-                future: auth.isUserAdmin(), 
+                future: isOwnerAndAdmin(), 
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(); // renvoi un container vide pendant l'attente
@@ -275,7 +276,40 @@ class DescriptionPageState extends State<DescriptionPage> {
                 },
               ),
               FutureBuilder<bool>(
-                future: auth.isUserAdmin(), 
+                future: isOwnerAndAdmin(), 
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(); // renvoi un container vide pendant l'attente
+                  } else if (snapshot.hasError) {
+                    return Container(); // renvoi un container vide en cas d'erreur
+                  } else {
+                    bool isAdmin = snapshot.data ?? false;
+
+                    // N'afficher le boutton supprimer que si l'utilisateur est admin
+                    return isAdmin? ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                              PageRouteBuilder(pageBuilder: (_, __, ___) => ModifyArticlePage(documentId: widget.documentId,)));
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                        maximumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                        minimumSize: MaterialStateProperty.all<Size>(Size(MediaQuery.of(context).size.width * 0.8, 30,)),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Modifier la publication '),
+                          Icon(Icons.edit),
+                        ],
+                      )
+                    )
+                    : Container(); //renvoi un container vide si l'utilisateur n'est pas administrateur
+                  }
+                },
+              ),
+              FutureBuilder<bool>(
+                future: isOwnerAndAdmin(), 
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(); // renvoi un container vide pendant l'attente
@@ -465,6 +499,27 @@ class DescriptionPageState extends State<DescriptionPage> {
     List<dynamic> tableParticipants = data["participants"] ?? [];
 
     return tableParticipants.contains(userId);
+  }
+
+  Future<bool> isOwnerAndAdmin() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      return false; 
+    }
+    String userId = currentUser.uid;
+
+    final publication = FirebaseFirestore.instance.collection("ACTIVITYDATA").doc(widget.documentId);
+    final DocumentSnapshot doc = await publication.get();
+    final data = doc.data() as Map<String, dynamic>;
+    String ownerId = data["owner"];
+    bool adminStatus = await auth.isUserAdmin();
+
+    bool superAdminStatus = await auth.isUserSuperAdmin();
+    if (superAdminStatus) {
+      return true;
+    }
+
+    return (userId==ownerId) && adminStatus;
   }
 
   String formatTimeStamp(date) {

@@ -6,14 +6,14 @@ import 'package:conjugo/authentication_service.dart';
 class UserDescriptionPage extends StatelessWidget {
 
   final AuthenticationService auth = AuthenticationService();
-  String nom;
-  String prenom;
-  String dateDeNaissance;
-  String mail;
-  bool admin;
-  bool superAdmin;
-  String userId;
-  String phone;
+  final String nom;
+  final String prenom;
+  final String dateDeNaissance;
+  final String mail;
+  final bool admin;
+  final bool superAdmin;
+  final String userId;
+  final String phone;
 
   UserDescriptionPage(
       {super.key,
