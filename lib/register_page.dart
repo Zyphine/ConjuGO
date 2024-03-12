@@ -16,38 +16,6 @@ class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
   @override
   RegisterPageState createState() => RegisterPageState();
-
-  void viewCGUDocument(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Conditions Générales d\'Utilisation'),
-          content: const SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ...',
-                ),
-                Text(
-                  '2. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ...',
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fermer'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
 
 class RegisterPageState extends State<RegisterPage> {
@@ -236,7 +204,7 @@ class RegisterPageState extends State<RegisterPage> {
                       },
                     ),
                   )),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               Row(
                 children: [
                   Checkbox(
@@ -256,6 +224,7 @@ class RegisterPageState extends State<RegisterPage> {
                       style: TextStyle(
                         color: Color.fromARGB(255, 0, 187, 245),
                         decoration: TextDecoration.underline,
+                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -392,10 +361,84 @@ class RegisterPageState extends State<RegisterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ...',
+                    'Merci de lire attentivement ces Conditions Générales d\'Utilisation (CGU) avant d\'utiliser l\'application ConjuGo.'),
+                Text(
+                  '',
                 ),
                 Text(
-                  '2. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ...',
+                  'En utilisant l\'application ConjuGo, vous acceptez d\'être lié par ces CGU. Si vous n\'acceptez pas ces termes, veuillez ne pas utiliser l\'application.',
+                ),
+                Text(
+                  '',
+                ),
+                Text('Description de l\'Application',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
+                Text(
+                  '',
+                ),
+                Text(
+                  'L\'application proposée vise à résoudre le problème de l\'isolement social des personnes âgées à Douai en facilitant leur participation aux événements locaux organisés par le Centre Communal d\'Action Sociale (CCAS) de Douai. Cette application mobile offre un moyen pratique pour les personnes âgées de se connecter avec la communauté et de s\'inscrire aux différents événements organisés par le CCAS.',
+                ),
+                Text(
+                  '',
+                ),
+                Text('Collecte et Utilisation des Données Personnelles',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
+                Text(
+                  '',
+                ),
+                Text(
+                  'En utilisant ConjuGo, vous consentez à la collecte et à l\'utilisation de vos données personnelles conformément à notre Politique de Confidentialité. Les données collectées peuvent inclure, sans s\'y limiter, votre nom, votre âge, votre adresse e-mail, votre numéro de téléphone, et toute autre information que vous choisissez de fournir.',
+                ),
+                Text(
+                  '',
+                ),
+                Text('Protection des Données Personnelles',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
+                Text(
+                  '',
+                ),
+                Text(
+                  'Nous nous engageons à protéger la confidentialité et la sécurité de vos données personnelles. Vos informations ne seront pas partagées avec des tiers sans votre consentement, sauf dans les cas prévus par la loi.',
+                ),
+                Text(
+                  '',
+                ),
+                Text('Utilisation des Services',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
+                Text(
+                  '',
+                ),
+                Text(
+                  'Vous vous engagez à utiliser ConjuGo de manière responsable et conforme à toutes les lois et réglementations applicables. Vous êtes responsable de toutes les activités qui se déroulent sous votre compte.',
+                ),
+                Text(
+                  '',
+                ),
+                Text('Modifications des CGU',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    )),
+                Text(
+                  '',
+                ),
+                Text(
+                    'Nous nous réservons le droit de modifier ces CGU à tout moment. Les modifications entreront en vigueur dès leur publication dans l\'application. Il est de votre responsabilité de consulter régulièrement les CGU pour prendre connaissance des mises à jour.'),
+                Text(
+                  'En utilisant l\'application ConjuGo, vous acceptez ces Conditions Générales d\'Utilisation. Si vous avez des questions ou des préoccupations concernant ces CGU, veuillez nous contacter à conjugo@gmail.com.',
                 ),
               ],
             ),
