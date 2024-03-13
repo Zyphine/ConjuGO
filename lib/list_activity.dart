@@ -26,6 +26,7 @@ class Activity {
   String? documentId = "";
   int? maxNumber = 0;
   String? type="";
+  String? pictureURL;
 
   Activity({
     this.name,
@@ -37,6 +38,7 @@ class Activity {
     this.documentId,
     this.maxNumber,
     this.type,
+    this.pictureURL,
   });
 
   factory Activity.fromFirestore(
@@ -56,6 +58,7 @@ class Activity {
         documentId : data?['documentId'],
         maxNumber : data?['maxNumber'],
         type : data?['type'],
+        pictureURL: data?['picture'],
       );
   }
 
@@ -79,6 +82,15 @@ class Activity {
   String getDocumentId() => documentId.toString();
   String getMaxNumber() => maxNumber.toString();
   String getType() => type.toString();
+  String getPictureURL() {
+    if (pictureURL.toString().isEmpty) {
+      print(pictureURL.toString());
+      return "https://freesvg.org/img/1551539165.png";
+    } else {
+      return pictureURL.toString();
+    }
+    
+  }
 }
 
 class ListViewHome extends State<ListViewHomeLayout> {
@@ -139,12 +151,9 @@ class ListViewHome extends State<ListViewHomeLayout> {
                       },
                       title: Text(activity.getName()),
                       subtitle: Text(activity.getDescription()),
-                      leading: const CircleAvatar(
-                                  //IMAGE DE L'ASSOCIATION (propre à chacune, enregistrée dans une base association)
-                                  backgroundImage: NetworkImage(
-                                      "https://www.eseg-douai.fr/mub-225-170-f3f3f3/15171/partenaire/5cf93cdcc9d5c_LOGOVILLEVERTICAL.png"
-                                    )
-                              ),
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(activity.getPictureURL())
+                      ),
                     ),
                   );
                 },

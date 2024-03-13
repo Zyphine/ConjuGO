@@ -238,9 +238,13 @@ class PublishArticlePageState extends State<PublishArticlePage> {
 
     // On récupère l'ID du document
     String documentId = docRef.id;
-
-    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    
     // On récupère l'id du propriétaire de la publication
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    //on récupère l'image associée
+    DocumentSnapshot<Object?> userSnapshot = await FirebaseFirestore.instance.collection('USERDATA').doc(userId).get();
+    final data = userSnapshot.data() as Map<String, dynamic>;
+    String pictureURL = data["picture"];
 
     // Ajout des données dans le document
     await docRef.set({
@@ -255,6 +259,7 @@ class PublishArticlePageState extends State<PublishArticlePage> {
       "participants": [],
       "owner": userId,
       "type": type,
+      "picture": pictureURL,
     });
     
     //Supprime les valeurs des controlleurs

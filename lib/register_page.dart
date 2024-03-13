@@ -60,6 +60,7 @@ class RegisterPageState extends State<RegisterPage> {
             "superAdmin": false,
             "mail": emailController.text,
             "phone" : phoneController.text,
+            "picture": "",
           });
           //Redirection vers page accueil activités
           showConfirmDialog(context);
