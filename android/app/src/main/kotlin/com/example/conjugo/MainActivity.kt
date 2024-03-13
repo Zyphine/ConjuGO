@@ -1,4 +1,4 @@
-package com.example.conjugo
+package com.imtne.conjugo
 
 import io.flutter.embedding.android.FlutterActivity
 
