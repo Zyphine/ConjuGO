@@ -84,7 +84,6 @@ class Activity {
   String getType() => type.toString();
   String getPictureURL() {
     if (pictureURL.toString().isEmpty) {
-      print(pictureURL.toString());
       return "https://freesvg.org/img/1551539165.png";
     } else {
       return pictureURL.toString();

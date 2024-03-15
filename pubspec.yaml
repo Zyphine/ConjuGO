@@ -31,11 +31,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.18.1
+  intl: ">=0.18.1"
   carousel_slider: ^4.2.1
   carousel_indicator: ^1.0.6
   lottie: ^3.1.0
-  google_fonts: ^6.1.0
+  google_fonts: ^6.2.1
   page_transition: ^2.0.9
 
   # The following adds the Cupertino Icons font to your application.
