@@ -18,6 +18,8 @@ class SettingsState extends State<Settings> {
   TextEditingController _urlController = TextEditingController();
   String? userPicture = "https://upload.wikimedia.org/wikipedia/commons/a/af/Image_non_disponible.png";
 
+  Uri cguUrl = Uri(scheme: 'http',host: 'conjugo-imtne.great-site.net',path: '/cgu.html'); //TODO : à retirer
+
   @override void initState() {
     initializeVariables();
     super.initState();

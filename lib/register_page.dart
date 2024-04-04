@@ -61,6 +61,7 @@ class RegisterPageState extends State<RegisterPage> {
             "mail": emailController.text,
             "phone" : phoneController.text,
             "picture": "",
+            "favorites": [],
           });
           //Redirection vers page accueil activités
           showConfirmDialog(context);

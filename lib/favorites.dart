@@ -7,18 +7,19 @@ import 'package:conjugo/drawer_menu.dart';
 
 AuthenticationService auth = AuthenticationService();
 
-class MyActivities extends StatefulWidget {
-  const MyActivities({super.key});
+class Favorites extends StatefulWidget {
+  const Favorites({super.key});
 
   @override
-  State<StatefulWidget> createState() => MyActivitiesState();
+  State<StatefulWidget> createState() => FavoritesState();
 }
 
-class MyActivitiesState extends State<MyActivities> {
+class FavoritesState extends State<Favorites> {
 
-  Future<List<Activity>> dataFinder() async {
+  Future<List<Activity>> dataFinder() async { //pas fini, a modifier pour les favoris, il faut delete les fav qui n'existent plus
     List<Activity> activityListResult = [];
-    List<String> arrayActivitiesId = await searchActivityForUser();
+    List<dynamic> arrayActivitiesId = await searchUserForFavorites();
+
     final querySnapshot = await db.collection("ACTIVITYDATA").get();
 
     for (DocumentSnapshot doc in querySnapshot.docs) {
@@ -27,6 +28,8 @@ class MyActivitiesState extends State<MyActivities> {
         String docId = data["documentId"];
         if (arrayActivitiesId.contains(docId)) {
           activityListResult.add(Activity.fromFirestore(doc as DocumentSnapshot<Map<String, dynamic>>, null));
+        } else {
+          removeFromFavorite(docId);
         }
       }
     }
@@ -55,16 +58,23 @@ class MyActivitiesState extends State<MyActivities> {
       return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
-          title: const Text("Mes Activités"),
+          title: const Text("Favoris"),
           centerTitle: true,
         ),
-        body: const Center(child: CircularProgressIndicator()),
+        body: Card(
+          child: ListTile(
+            onTap: () {},
+            title: const Text("Aucun favoris"),
+            subtitle: const Text("Essayer d'appuyer sur le coeur sur une page d'activité"),
+            leading: const Icon(Icons.close_outlined),
+          ),
+        ),
       );
     } else {
       return Scaffold(
         drawer: DrawerMenu(),
         appBar: AppBar(
-          title: const Text("Mes Activités"),
+          title: const Text("Favoris"),
           centerTitle: true,
         ),
         body: Column(
@@ -110,25 +120,27 @@ class MyActivitiesState extends State<MyActivities> {
     }
   }
 
-  Future<List<String>> searchActivityForUser() async {
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("ACTIVITYDATA").get();
-
-    List<String> foundActivities = [];
+  Future<List<dynamic>> searchUserForFavorites() async {
+    
     String userUid = auth.getUser();
 
-    for (DocumentSnapshot doc in querySnapshot.docs) {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      if (doc.data() != null) {
-        List<dynamic> arrayField = data["participants"];
-        String activityId = data["documentId"];
-        if (arrayField.contains(userUid)) {
-          foundActivities.add(activityId);
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection("USERDATA").doc(userUid).get();
+    Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+    List<dynamic> result = data["favorites"];
+    
+    return result;
+  }
+
+  Future<void> removeFromFavorite(String docId) async {
+    String userUid = auth.getUser();
+    final userDoc = FirebaseFirestore.instance.collection("USERDATA").doc(userUid);
+      userDoc.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          List tableFavorites = data["favorites"]; 
+          tableFavorites.remove(docId);
+          userDoc.update({"favorites": tableFavorites});
         }
-      }
-    }
-
-
-    return foundActivities;
+      );
   }
 }
