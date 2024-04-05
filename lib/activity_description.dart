@@ -43,7 +43,10 @@ class DescriptionPageState extends State<DescriptionPage> {
   @override
   void initState() {
     super.initState();
+    updateFavoriteStatus();
   }
+
+  bool isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +90,24 @@ class DescriptionPageState extends State<DescriptionPage> {
                     Positioned(
                       top: 0,
                       right: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.favorite_border),
-                        color: Colors.black,
-                        onPressed: () {
-                          // Implement add to favorites logic here
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            isFavorite = !isFavorite;
+                          });
+                          if (isFavorite) {
+                            addToFavorite();
+                          } else {
+                            removeFromFavorite();
+                          }
                         },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          child: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -343,6 +358,49 @@ class DescriptionPageState extends State<DescriptionPage> {
         ),
       )
     );
+  }
+
+  Future<void> addToFavorite() async {
+    String userUid = auth.getUser();
+    final userDoc = FirebaseFirestore.instance.collection("USERDATA").doc(userUid);
+      userDoc.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          List tableFavorites = data["favorites"]; 
+          tableFavorites.add(widget.documentId);
+          userDoc.update({"favorites": tableFavorites});
+        }
+      );
+  }
+
+  Future<void> removeFromFavorite() async {
+    String userUid = auth.getUser();
+    final userDoc = FirebaseFirestore.instance.collection("USERDATA").doc(userUid);
+      userDoc.get().then(
+        (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          List tableFavorites = data["favorites"]; 
+          tableFavorites.remove(widget.documentId);
+          userDoc.update({"favorites": tableFavorites});
+        }
+      );
+  }
+
+  Future<void> updateFavoriteStatus() async {
+    String userUid = auth.getUser();
+
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance.collection("USERDATA").doc(userUid).get();
+    Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+    List<dynamic> result = data["favorites"];
+    if (result.contains(widget.documentId)) {
+      setState(() {
+        isFavorite=true;
+      });
+    } else {
+      setState(() {
+        isFavorite=false;
+      });
+    }
   }
 
   Future<void> unRegisterParticipant(BuildContext context) async {

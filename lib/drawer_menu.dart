@@ -1,5 +1,5 @@
 import 'package:conjugo/authentication_service.dart';
-import 'package:conjugo/activity_map.dart';
+import 'package:conjugo/favorites.dart';
 import 'package:conjugo/dashboard.dart';
 import 'package:conjugo/list_service.dart';
 import 'package:conjugo/my_activities.dart';
@@ -94,7 +94,7 @@ class DrawerMenu extends Drawer {
                 Navigator.push(
                     context,
                     PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const ActivityMap()));
+                        pageBuilder: (_, __, ___) => const Favorites()));
               },
               child: const Card(
                   color: Colors.blue,
